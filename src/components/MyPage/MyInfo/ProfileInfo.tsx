@@ -106,17 +106,18 @@ const ProfileInfo: React.FC = () => {
             </div>
           </div>
           <div className="mt-6">
-            <label htmlFor="delete-account" className="sr-only">
-              회원 탈퇴
-            </label>
-            <button type="button" onClick={handleOpenModal} className="mb-6">
+            <button type="button" aria-label=" 회원 탈퇴" onClick={handleOpenModal} className="mb-6">
               회원 탈퇴
             </button>
             <div className="space-x-2">
-              <button type="button" className="px-4 py-2 bg-gray-100 rounded-md text-sm">
+              <button type="button" aria-label=" 회원 정보 취소" className="px-4 py-2 bg-gray-100 rounded-md text-sm">
                 취소
               </button>
-              <button type="submit" className="px-4 py-2 bg-gray-900 text-white rounded-md text-sm">
+              <button
+                type="submit"
+                aria-label=" 회원 정보 저장"
+                className="px-4 py-2 bg-gray-900 text-white rounded-md text-sm"
+              >
                 저장
               </button>
             </div>

@@ -19,17 +19,14 @@ const LeftNav = () => {
       <nav>
         <ul className="w-full">
           <li className="mb-3">
-            <Link
-              href="/mypage"
-              className={`block w-full hover:text-blue-500 ${pathname === "/mypage" ? "font-bold" : ""}`}
-            >
+            <Link href="/mypage" className={`block w-full ${pathname === "/mypage" ? "font-bold" : ""}`}>
               내 정보 수정
             </Link>
           </li>
           <li className="mb-3">
             <Link
               href="/mypage/myinterests"
-              className={`block w-full hover:text-blue-500 ${pathname === "/mypage/myinterests" ? "font-bold" : ""}`}
+              className={`block w-full  ${pathname === "/mypage/myinterests" ? "font-bold" : ""}`}
             >
               내 관심글
             </Link>
@@ -37,7 +34,7 @@ const LeftNav = () => {
           <li className="mb-3">
             <Link
               href="/mypage/myposts"
-              className={`block w-full hover:text-blue-500 ${pathname === "/mypage/myposts" ? "font-bold" : ""}`}
+              className={`block w-full ${pathname === "/mypage/myposts" ? "font-bold" : ""}`}
             >
               내 작성글
             </Link>
