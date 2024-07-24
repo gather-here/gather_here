@@ -4,7 +4,7 @@ const MyInfo = () => {
   return (
     <section>
       <form className="space-y-6">
-        <fieldset className="bg-white p-6 rounded-2xl border border-gray-200 shadow-sm">
+        <fieldset className="bg-white rounded-2xl border border-gray-200 shadow-sm p-6">
           <h1 className="text-lg font-semibold mb-4">기본 정보</h1>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -52,7 +52,7 @@ const MyInfo = () => {
             <label htmlFor="delete-account" className="sr-only">
               회원 탈퇴
             </label>
-            <button type="button" className="px-4 py-2 bg-gray-100 rounded-md text-sm">
+            <button type="button" className="">
               회원 탈퇴
             </button>
             <div className="space-x-2">
