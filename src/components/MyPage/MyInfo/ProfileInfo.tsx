@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useModal } from "@/provider/ContextProvider";
+import { useModal } from "@/Provider/ContextProvider";
 
 const ProfileInfo: React.FC = () => {
   const { openModal, closeModal } = useModal();

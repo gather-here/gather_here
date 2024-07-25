@@ -1,7 +1,7 @@
 "use client";
 
 import React from "react";
-import { useModal } from "@/provider/ContextProvider";
+import { useModal } from "@/Provider/ContextProvider";
 
 const ModalTest: React.FC = () => {
   // useModal 훅을 사용하여 모달을 여는 함수를 가져옴
