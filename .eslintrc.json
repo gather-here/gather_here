@@ -1,0 +1,57 @@
+{
+  "compilerOptions": {
+    // 사용할 라이브러리 설정
+    "lib": ["dom", "dom.iterable", "esnext"],
+
+    // JavaScript 파일 허용 여부
+    "allowJs": true,
+
+    // 라이브러리 타입 체크 생략
+    "skipLibCheck": true,
+
+    // 엄격한 타입 체크 설정
+    "strict": true,
+
+    // 컴파일된 파일을 생성하지 않음
+    "noEmit": true,
+
+    // ES 모듈 간 상호 운용성 지원
+    "esModuleInterop": true,
+
+    // 모듈 시스템 설정
+    "module": "esnext",
+
+    // 모듈 해석 전략 설정
+    "moduleResolution": "bundler",
+
+    // JSON 모듈 해석 허용
+    "resolveJsonModule": true,
+
+    // 각 모듈을 개별적으로 컴파일
+    "isolatedModules": true,
+
+    // JSX 설정
+    "jsx": "preserve",
+
+    // 증분 컴파일 활성화
+    "incremental": true,
+
+    // 사용할 플러그인 설정
+    "plugins": [
+      {
+        "name": "next"
+      }
+    ],
+
+    // 경로 별칭 설정
+    "paths": {
+      "@/*": ["./src/*"]
+    }
+  },
+
+  // 포함할 파일 설정
+  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
+
+  // 제외할 파일 설정
+  "exclude": ["node_modules"]
+}
