@@ -1,11 +1,12 @@
 import { useState, useEffect } from "react";
 import { createClient } from "@/utils/supabase/client";
 import { FormValues } from "@/components/Signup/Signup03";
-import { useUser } from "@/provider/UserContextProvider";
+import { useUser } from "@/provider/UserContextProvider";  // useUser 훅을 가져옴
 
 const supabase = createClient();
 
 const useSubmitProfile = (setUserData: (data: any) => void) => {
+  // useUser 훅을 사용하여 필요한 상태와 메서드를 가져옴
   const {
     nextStep,
     setNickname,
@@ -21,13 +22,14 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
   const [blogError, setBlogError] = useState<string | null>(null);
   const [blogSuccess, setBlogSuccess] = useState<string | null>(null);
 
+  // 세션에서 사용자 정보를 가져옴
   useEffect(() => {
     const fetchUser = async () => {
       const {
         data: { session },
       } = await supabase.auth.getSession();
-      if (session) {
-        setUser(session.user);
+      if (session && session.user) {
+        setUser(session.user);  // 사용자 세션 설정
         if (session.user.user_metadata?.avatar_url) {
           setProfileImageUrl(session.user.user_metadata.avatar_url);
         }
@@ -37,11 +39,13 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
     fetchUser();
   }, [setUser, setProfileImageUrl]);
 
+  // URL 유효성 검사 함수
   const validateUrl = (url: string): boolean => {
     if (!url || url.trim() === "") {
-      return true;
+      return true;  // URL이 비어있을 때는 유효하다고 처리
     }
 
+    // URL 유효성 검사 패턴
     const urlPattern = new RegExp(
       "^(https?:\\/\\/)?" +
         "((([a-z\\d]([a-z\\d-]*[a-z\\d])*)\\.)+[a-z]{2,6})" +
@@ -50,9 +54,10 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
         "(\\#[-a-z\\d_]*)?$",
       "i",
     );
-    return urlPattern.test(url);
+    return urlPattern.test(url);  // URL 유효성 검사 결과 반환
   };
 
+  // 프로필 제출 함수
   const onSubmit = async (data: FormValues, nicknameAvailable: boolean | null, setError: any) => {
     const { nickname, blog } = data;
 
@@ -68,7 +73,7 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
 
     let formattedBlog = blog;
     if (blog && !/^https?:\/\//i.test(blog)) {
-      formattedBlog = "http://" + blog;
+      formattedBlog = "http://" + blog;  // HTTP가 없을 경우 붙여줌
     }
 
     if (formattedBlog && !validateUrl(formattedBlog)) {
@@ -77,8 +82,8 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
       return;
     }
 
-    setBlogError(null);
-    setBlogSuccess("유효한 URL입니다.");
+    setBlogError(null);  // 에러 초기화
+    setBlogSuccess("유효한 URL입니다.");  // URL 성공 메시지 설정
 
     try {
       const { error: updateError } = await supabase
@@ -99,11 +104,14 @@ const useSubmitProfile = (setUserData: (data: any) => void) => {
         return;
       }
 
+      // 닉네임과 블로그 정보 업데이트
       setNickname(nickname);
       setBlog(formattedBlog || "");
+
+      // 상태 업데이트 (프로필 정보 저장)
       setUserData({ ...user, nickname, blog: formattedBlog, job_title, experience, profile_image_url });
 
-      nextStep();
+      nextStep();  // 다음 단계로 이동
     } catch (err) {
       console.error("Unexpected error:", err);
       setError("nickname", { message: "예기치 않은 오류가 발생했습니다. 다시 시도해 주세요." });

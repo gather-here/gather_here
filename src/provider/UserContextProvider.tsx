@@ -1,159 +1,196 @@
-"use client";
+import React, { createContext, useContext, useState, useCallback, ReactNode } from 'react';
+import { createClient } from "@/utils/supabase/client"; // Supabase 클라이언트
+import { User } from "@supabase/supabase-js"; // Supabase User 타입
 
-import React, { createContext, useContext, useEffect } from "react";
-import { useSignupForm } from "@/hooks/useSignupForm";
-import { useUserData } from "@/hooks/useUserData";
-import { User } from "@supabase/supabase-js";
-
-// UserContextType 인터페이스에 추가로 필요한 상태와 메서드를 정의
-// Context API에서 전역으로 사용할 사용자 관련 상태 및 함수들의 타입을 정의
-interface UserContextType {
+// 사용자 인증 상태 인터페이스
+interface AuthState {
   user: User | null;
-  userData: any;
+  isAuthenticated: boolean;
+  setUser: (user: User | null) => void;
+  resetAuthUser: () => void;
+}
+
+// 사용자 데이터 상태 인터페이스
+interface UserData {
+  nickname: string;
+  job_title: string;
+  experience: string;
+  profile_image_url: string;
+  blog: string;
+}
+
+// 회원가입 상태 인터페이스
+interface SignupState {
   step: number;
   job_title: string;
   experience: string;
   nickname: string;
   blog: string;
   profile_image_url: string;
-  setUserData: (data: any) => void;
-  fetchUserData: () => Promise<void>;
-  loading: boolean;
-  initializationUser: () => void;
-  setJob: (job: string) => void;
-  updateField: (field: string, value: string) => void;
+  setField: (field: keyof SignupState, value: string) => void;
   nextStep: () => void;
   prevStep: () => void;
   resetSignupUser: () => void;
-  resetAuthUser: () => void;
-  setNickname: (nickname: string) => void;
-  setBlog: (blog: string) => void;
-  setUser: (user: User | null) => void;
+  setJob: (job_title: string) => void;
   setProfileImageUrl: (url: string) => void;
+  setBlog: (blog: string) => void;
+  setNickname: (nickname: string) => void;
 }
 
-// 기본값으로 사용될 상태 초기화
-// UserContext의 초기값을 설정 (빈 값 또는 함수)
-export const UserContext = createContext<UserContextType>({
-  user: null,
-  userData: null,
-  step: 1,
-  job_title: "",
-  experience: "",
-  nickname: "",
-  blog: "",
-  profile_image_url: "",
-  setUserData: () => {},
-  fetchUserData: async () => {},
-  loading: true,
-  initializationUser: () => {},
-  setJob: () => {},
-  updateField: () => {},
-  nextStep: () => {},
-  prevStep: () => {},
-  resetSignupUser: () => {},
-  resetAuthUser: () => {},
-  setNickname: () => {},
-  setBlog: () => {},
-  setUser: () => {},
-  setProfileImageUrl: () => {},
-});
+// 전체 상태 인터페이스 (AuthState + SignupState + UserData)
+interface StoreState extends AuthState, SignupState {
+  userData: UserData | null;
+  setUserData: (data: UserData) => void;
+  fetchUserData: () => Promise<void>;
+  initializationUser: () => void;
+}
 
-// UserProvider 컴포넌트: 전역 상태를 관리하고 하위 컴포넌트들에게 UserContext를 제공
-export const UserProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
- 
-  // useUserData 훅을 사용하여 사용자 상태와 관련된 데이터를 가져옴 (Supabase에서 데이터를 가져옵니다)
-  const {
-    user,
-    setUser,
-    userData,
-    loading,
-    setUserData,
-    fetchUserAndData,
-    initializationUser,
-  } = useUserData();
+// Context 생성
+const UserContext = createContext<StoreState | undefined>(undefined);
 
-  // useSignupForm 훅을 사용하여 회원가입 폼 관련 상태를 관리
-  const {
-    step,
-    job_title,
-    experience,
-    nickname,
-    blog,
-    profile_image_url,
-    setJobTitle,
-    updateField,
-    nextStep,
-    prevStep,
-    resetSignupUser,
-  } = useSignupForm();
+// Provider 컴포넌트
+export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
+  const supabase = createClient(); // Supabase 클라이언트 생성
 
-  // 닉네임을 설정하는 함수. `setUserData`를 사용해 `userData`에 닉네임을 저장합니다.
-  const setNickname = (nickname: string) => {
-    setUserData((prevData: any) => ({ ...prevData, nickname }));
-  };
+  // 사용자 인증 상태
+  const [user, setUser] = useState<User | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false); // 인증 여부 관리
 
-  // 블로그 URL을 설정하는 함수. `setUserData`를 사용해 `userData`에 블로그 URL을 저장합니다.
-  const setBlog = (blog: string) => {
-    setUserData((prevData: any) => ({ ...prevData, blog }));
-  };
+  // 사용자 데이터 상태
+  const [userData, setUserData] = useState<UserData | null>(null);  // userData 상태
 
-  // 사용자를 설정하는 함수. 로그인 시 사용됩니다.
-  const setUserFn = (newUser: User | null) => {
-    setUser(newUser);
-  };
+  // 회원가입 상태
+  const [step, setStep] = useState<number>(1);
+  const [job_title, setJobTitle] = useState<string>("");
+  const [experience, setExperience] = useState<string>("");
+  const [nickname, setNickname] = useState<string>("");
+  const [blog, setBlog] = useState<string>("");
+  const [profile_image_url, setProfileImageUrl] = useState<string>(""); 
 
-   // 프로필 이미지 URL을 설정하는 함수. 사용자 데이터를 업데이트합니다.
-  const setProfileImageUrl = (url: string) => {
-    setUserData((prevData: any) => ({ ...prevData, profile_image_url: url }));
-  };
+  // 사용자 데이터 가져오기 함수
+  const fetchUserData = useCallback(async () => {
+    if (!user || !user.id) return;
 
- // 사용자 인증 상태를 초기화하고 회원가입 상태도 초기화하는 함수
- // 사용자가 로그아웃하거나 회원가입을 리셋할 때 호출되는 함수
-  const resetAuthUser = () => {
+    const { data, error } = await supabase
+      .from('Users')
+      .select('nickname, job_title, experience, profile_image_url, blog') 
+      .eq("user_id", user.id)
+      .single();
+
+    if (error) {
+      console.error('Error fetching user data:', error.message);
+      return;
+    }
+
+    if (data) {
+      setUserData(data as UserData);
+    }
+  }, [user, supabase]);
+
+  // 사용자 인증 상태 업데이트 및 초기화
+  const setAuthUser = useCallback((user: User | null) => {
+    setUser(user);
+    setIsAuthenticated(!!user); // user가 있으면 true, 없으면 false로 인증 상태 설정
+  }, []);
+
+  const resetAuthUser = useCallback(() => {
     setUser(null);
+    setIsAuthenticated(false); // 인증 상태 초기화
+    setUserData(null); // 사용자 데이터도 초기화
+  }, []);
+
+  // 회원가입 필드 업데이트
+  const setField = useCallback((field: keyof SignupState, value: string) => {
+    switch (field) {
+      case "job_title":
+        setJobTitle(value);
+        break;
+      case "experience":
+        setExperience(value);
+        break;
+      case "nickname":
+        setNickname(value);
+        break;
+      case "blog":
+        setBlog(value);
+        break;
+      case "profile_image_url":
+        setProfileImageUrl(value);
+        break;
+      default:
+        break;
+    }
+  }, []);
+
+  // job_title 업데이트 함수 추가
+  const setJob = useCallback((job_title: string) => {
+    setJobTitle(job_title);
+  }, []);
+
+  // setUserData 함수 정의
+  const setUserDataHandler = useCallback((data: UserData) => {
+    setUserData(data);
+  }, []);
+
+  // 회원가입 단계 제어
+  const nextStep = useCallback(() => setStep((prev) => prev + 1), []);
+  const prevStep = useCallback(() => setStep((prev) => prev - 1), []);
+  
+  // 회원가입 상태 초기화
+  const resetSignupUser = useCallback(() => {
+    setStep(1);
+    setJobTitle("");
+    setExperience("");
+    setNickname("");
+    setBlog("");
+    setProfileImageUrl("");
+  }, []);
+
+  // 사용자 상태 초기화
+  const initializationUser = useCallback(() => {
+    resetAuthUser();
     resetSignupUser();
-  };
+  }, [resetAuthUser, resetSignupUser]);
 
- // 컴포넌트가 마운트될 때 fetchUserAndData 함수 호출 (사용자 데이터를 가져옴)
-  useEffect(() => {
-    fetchUserAndData();
-  }, [fetchUserAndData]);
-
-  // 전역적으로 사용할 상태와 함수를 contextValue로 설정
-  const contextValue = {
+  // Context에 제공할 값
+  const contextValue: StoreState = {
+    // AuthState
     user,
+    isAuthenticated, // 인증 여부 추가
+    setUser: setAuthUser,
+    resetAuthUser,
+
+    // 사용자 데이터
     userData,
-    setUserData,
-    fetchUserData: fetchUserAndData,
-    loading,
+    setUserData: setUserDataHandler,
+    fetchUserData,
     initializationUser,
+
+    // SignupState
     step,
     job_title,
     experience,
     nickname,
     blog,
     profile_image_url,
-    setJob: setJobTitle,
-    updateField,
+    setField,
     nextStep,
     prevStep,
     resetSignupUser,
-    resetAuthUser,
-    setNickname,
-    setBlog,
-    setUser: setUserFn,
+    setJob,
     setProfileImageUrl,
+    setBlog,
+    setNickname, 
   };
-    // 하위 컴포넌트에게 contextValue를 전달
+
   return <UserContext.Provider value={contextValue}>{children}</UserContext.Provider>;
 };
 
-// 사용자 정보를 사용하는 훅
+// Hook을 통한 Context 사용
 export const useUser = () => {
   const context = useContext(UserContext);
   if (!context) {
-    throw new Error("useUser는 반드시 UserProvider 내에서 사용되어야 합니다.");
+    throw new Error("useUser는 UserProvider 내부에서만 사용할 수 있습니다.");
   }
   return context;
 };
