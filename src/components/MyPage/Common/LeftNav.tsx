@@ -49,11 +49,12 @@ const LeftNav: React.FC = () => {
         const { data, error } = await supabase.from("Users").select("*").eq("user_id", user.id).limit(1).single();
         if (data) {
           const updatedUserData = {
-            nickname: data.nickname ?? "", 
+            nickname: data.nickname ?? "",
             job_title: data.job_title ?? "",
             experience: data.experience ?? "",
             profile_image_url: data.profile_image_url ?? "",
-            blog: data.blog ?? ""
+            blog: data.blog ?? "",
+            description: data.description ?? "",
           };
           setUserData(updatedUserData);
         } else {
