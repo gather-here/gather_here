@@ -276,8 +276,6 @@ export type Database = {
         };
         Update: {
           blog: string | null;
-          created_at: string | null;
-          email: string | null;
           experience: string | null;
           job_title: string | null;
           nickname: string | null;
@@ -285,7 +283,6 @@ export type Database = {
           background_image_url?: string | null
           description?: string | null
           hubCard?: boolean
-          user_id: string;
           answer1: string | null;
           answer2: string | null;
           answer3: string | null;

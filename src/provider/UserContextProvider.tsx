@@ -14,17 +14,21 @@ interface AuthState {
 // 사용자의 프로필과 관련된 데이터를 관리하는 인터페이스입니다.
 // 사용자의 직업 정보, 포트폴리오, 자기소개 등 멤버 카드와 관련된 세부 정보를 포함합니다.
 interface UserData {
-  nickname: string;
-  job_title: string;
-  experience: string;
-  description: string; // 자기소개
-  profile_image_url: string;
-  blog: string; // 대표 포트폴리오
+  nickname: string
+  job_title: string
+  experience: string
+  description: string
+  profile_image_url: string
+  blog: string | null;
   hubCard?: boolean;
-  background_image_url?: string; // 포트폴리오 이미지
+  background_image_url?: string
   answer1?: string
   answer2?: string
   answer3?: string
+  first_link_type?: string;
+  first_link?: string;
+  second_link_type?: string;
+  second_link?: string;
 }
 
 // 회원가입 상태를 관리하는 인터페이스입니다.
@@ -59,8 +63,12 @@ interface StoreState extends AuthState, SignupState {
   hubCard?: boolean;  // hubCard 추가
   likedMembers: { [key: string]: boolean }; // 특정 유저에 대한 좋아요 상태를 저장하는 객체
   toggleLike: (nickname: string) => void; // 좋아요 상태를 변경하는 함수, nickname을 인자로 받아 상태를 변경함
-  updateUserAnswers: (answers: { answer1?: string; answer2?: string; answer3?: string }) => Promise<void>; // 사용자 답변을 업데이트하는 비동기 함수
-}
+  updateUserAnswers: (answers: Partial<UserData>) => Promise<void>;  // 사용자 답변을 업데이트하는 비동기 함수, answers는 UserData의 일부 속성만 업데이트 가능
+  first_link_type?: string;  // 첫 번째 링크의 타입 (예: "GitHub", "LinkedIn" 등), null 허용
+  first_link?: string;       // 첫 번째 링크의 URL, null 허용
+  second_link_type?: string; // 두 번째 링크의 타입 (예: "GitHub", "LinkedIn" 등), null 허용
+  second_link?: string;      // 두 번째 링크의 URL, null 허용
+  }
 
 // UserContext 생성 (기본값은 undefined로 설정)
 const UserContext = createContext<StoreState | undefined>(undefined);
@@ -82,10 +90,29 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
    // 유저 답변을 업데이트하는 함수
    const updateUserAnswers = async (answers: Partial<UserData>) => {
     if (!user) return;
+  
     try {
+      const sanitizedAnswers = {
+        ...answers,
+        blog: answers.blog ?? '',
+        job_title: answers.job_title ?? '',
+        experience: answers.experience ?? '',
+        nickname: answers.nickname ?? '',  // null 대신 빈 문자열로 처리
+        profile_image_url: answers.profile_image_url ?? '',
+        background_image_url: answers.background_image_url ?? '',
+        first_link_type: answers.first_link_type ?? '',
+        first_link: answers.first_link ?? '',
+        second_link_type: answers.second_link_type ?? '',
+        second_link: answers.second_link ?? '',
+        answer1: answers.answer1 ?? '',
+        answer2: answers.answer2 ?? '',
+        answer3: answers.answer3 ?? ''
+      };
+  
+      // Supabase의 'Users' 테이블에서 해당 유저의 데이터를 업데이트
       const { error } = await supabase
         .from('Users')
-        .update(answers)
+        .update(sanitizedAnswers) // 업데이트할 필드 전달
         .eq('user_id', user.id);
   
       if (error) {
@@ -93,9 +120,9 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       } else {
         setUserData((prev) => {
           if (prev) {
-            return { ...prev, ...answers };
+            return { ...prev, ...sanitizedAnswers }; // prev의 값과 병합하여 업데이트
           }
-          return prev;
+          return prev; // prev가 null인 경우 그대로 반환
         });
       }
     } catch (error) {
@@ -237,7 +264,8 @@ export const UserProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
   };
 
-// Context에 제공할 값에 userData.hubCard 상태 포함
+// StoreState 타입의 객체를 생성하여 전역적으로 관리되는 상태를 Context에 제공.
+// 페이지 내 여러 컴포넌트에서 Context를 통해 이 값을 접근하고, 필요에 따라 업데이트할 수 있다.
 const contextValue: StoreState = {
   user,
   isAuthenticated,
@@ -256,6 +284,10 @@ const contextValue: StoreState = {
   description: userData?.description || "",
   background_image_url: userData?.background_image_url || "",
   hubCard: userData?.hubCard || false,
+  first_link_type: userData?.first_link_type || "", 
+  first_link: userData?.first_link || "",      
+  second_link_type: userData?.second_link_type || "",
+  second_link: userData?.second_link || "",           
   setField,
   nextStep,
   prevStep,
