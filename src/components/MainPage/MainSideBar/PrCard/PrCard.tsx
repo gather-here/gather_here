@@ -48,7 +48,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
     const liked = likedMembers[nickname] || false;
 
   return (
-    <div className="w-[340px] h-64 p-5 bg-[#141415] rounded-3xl flex-col justify-between items-center inline-flex">
+    <div className="w-[340px] h-65 p-5 bg-[#141415] rounded-3xl flex-col justify-between items-center inline-flex">
       <div className="self-stretch grow shrink basis-0 rounded-3xl flex-col justify-between items-start flex">
 
         {/* 상단 프로필 섹션 */}
@@ -161,7 +161,6 @@ const MemberCard: React.FC<MemberCardProps> = ({
     </div>
    );
   };
-
   const AdCard: React.FC = () => {
     const settings = {
       infinite: true,
@@ -172,28 +171,33 @@ const MemberCard: React.FC<MemberCardProps> = ({
       autoplaySpeed: 4000,
       arrows: false,
     };
-  
+    
     const [slides, setSlides] = useState<any[]>([]);
-  
+    
     const { data, isLoading, isError } = useInfiniteQuery({
       queryKey: ["members"],
       queryFn: fetchMembers,
       getNextPageParam: (lastPage) => lastPage.nextPage,
       initialPageParam: 1,
     });
-  
+    
     useEffect(() => {
       if (data) {
         const latestMembers = data.pages.flatMap((page) => page.members).slice(0, 10);
         setSlides(latestMembers);
       }
     }, [data]);
-  
+    
     if (isLoading) return <p>Loading...</p>;
     if (isError) return <p>Error loading data...</p>;
-
-  return (
-    <div className="w-auto h-auto rounded-2xl my-3">
+    
+    return (
+      <div className="w-auto h-auto rounded-2xl my-3" style={{ marginTop: '-10px' }}>
+        {" "}
+      <h4 className="flex items-center my-3 text-labelNormal">
+        <Image src="/assets/gif/mic.gif" alt="마이크 모양 아이콘" width={20} height={20} className="mr-1" />
+        자랑스러운 게더_멤버들을 소개할게요
+      </h4>
       <Slider {...settings}>
         {slides.map((member, index) => (
           <div key={index}>
@@ -208,7 +212,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
               instagramLink={member.instagramLink}
               liked={false} 
               toggleLike={() => {}}
-            />
+              />
           </div>
         ))}
       </Slider>
