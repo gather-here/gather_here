@@ -1,0 +1,33 @@
+name: "🎨 STYLE"
+description: "UI/디자인 요소를 수정하고 시각적 스타일을 개선하기 위한 작업입니다. 레이아웃, 텍스트, 색상 등 사용자 인터페이스를 수정합니다."
+labels: [style]
+title: "[STYLE] 이슈 이름을 작성해주세요"
+
+body:
+  - type: input
+    id: parentKey
+    attributes:
+      label: "상위 작업 Ticket Number"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "GH-1234"
+    validations:
+      required: true
+
+  - type: input
+    id: uiElement
+    attributes:
+      label: "수정할 UI 요소"
+      description: "수정이 필요한 UI 요소 (버튼, 텍스트 등)"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+    validations:
+      required: true
+
+  - type: textarea
+    id: styleChanges
+    attributes:
+      label: "디자인 변경 사항"
+      description: "디자인 변경 내용과 예상 시각적 결과를 설명해주세요"
+    validations:
+      required: true

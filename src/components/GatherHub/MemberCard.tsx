@@ -5,42 +5,9 @@ import { useUser } from "@/provider/UserContextProvider";
 import Image from "next/image";
 import Link from "next/link";
 import React, { useEffect, useMemo, useState } from "react";
+import { techStacks } from "@/lib/techStacks";
 import { createPortal } from "react-dom";
 
-// 기술 스택 목록
-const techStacks = [
-  { id: "aws", name: "AWS", image: "/Stacks/AWS.svg" },
-  { id: "django", name: "Django", image: "/Stacks/Django.svg" },
-  { id: "docker", name: "Docker", image: "/Stacks/Docker.svg" },
-  { id: "express", name: "Express", image: "/Stacks/Express.svg" },
-  { id: "figma", name: "Figma", image: "/Stacks/Figma.svg" },
-  { id: "firebase", name: "Firebase", image: "/Stacks/Firebase.svg" },
-  { id: "flutter", name: "Flutter", image: "/Stacks/Flutter.svg" },
-  { id: "git", name: "Git", image: "/Stacks/Git.svg" },
-  { id: "go", name: "Go", image: "/Stacks/Go.svg" },
-  { id: "graphql", name: "GraphQL", image: "/Stacks/GraphQL.svg" },
-  { id: "java", name: "Java", image: "/Stacks/Java.svg" },
-  { id: "javascript", name: "JavaScript", image: "/Stacks/JavaScript.svg" },
-  { id: "jest", name: "Jest", image: "/Stacks/Jest.svg" },
-  { id: "kotlin", name: "Kotlin", image: "/Stacks/Kotlin.svg" },
-  { id: "kubernetes", name: "Kubernetes", image: "/Stacks/Kubernetes.svg" },
-  { id: "mongodb", name: "MongoDB", image: "/Stacks/MongoDB.svg" },
-  { id: "mysql", name: "MySQL", image: "/Stacks/MySQL.svg" },
-  { id: "nestjs", name: "NestJS", image: "/Stacks/Nestjs.svg" },
-  { id: "nextjs", name: "NextJS", image: "/Stacks/Nextjs.svg" },
-  { id: "nodejs", name: "NodeJS", image: "/Stacks/Nodejs.svg" },
-  { id: "php", name: "PHP", image: "/Stacks/Php.svg" },
-  { id: "python", name: "Python", image: "/Stacks/Python.svg" },
-  { id: "react", name: "React", image: "/Stacks/React.svg" },
-  { id: "reactnative", name: "React Native", image: "/Stacks/ReactNative.svg" },
-  { id: "spring", name: "Spring", image: "/Stacks/Spring.svg" },
-  { id: "svelte", name: "Svelte", image: "/Stacks/Svelte.svg" },
-  { id: "swift", name: "Swift", image: "/Stacks/Swift.svg" },
-  { id: "typescript", name: "TypeScript", image: "/Stacks/TypeScript.svg" },
-  { id: "unity", name: "Unity", image: "/Stacks/Unity.svg" },
-  { id: "vue", name: "Vue", image: "/Stacks/Vue.svg" },
-  { id: "zeplin", name: "Zeplin", image: "/Stacks/Zeplin.svg" },
-];
 // MemberCardProps: 멤버 카드 컴포넌트에서 필요한 속성들을 정의하는 인터페이스
 interface MemberCardProps {
   nickname: string;

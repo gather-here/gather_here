@@ -1,0 +1,30 @@
+name: Close Jira issue
+on:
+  issues:
+    types:
+      - closed # GitHub Issue가 닫힐 때 실행
+
+jobs:
+  close-issue:
+    name: Close Jira issue
+    runs-on: ubuntu-latest
+    steps:
+      - name: Login to Jira
+        uses: atlassian/gajira-login@v3
+        env:
+          JIRA_BASE_URL: ${{ secrets.JIRA_BASE_URL }}
+          JIRA_API_TOKEN: ${{ secrets.JIRA_API_TOKEN }}
+          JIRA_USER_EMAIL: ${{ secrets.JIRA_USER_EMAIL }}
+
+      - name: Extract Jira Issue ID
+        run: |
+          ISSUE_TITLE="${{ github.event.issue.title }}"
+          JIRA_ISSUE=$(echo "${ISSUE_TITLE}" | grep -o -E "[A-Z]+-[0-9]+")
+          echo "Jira Issue ID: $JIRA_ISSUE"
+          echo "JIRA_ISSUE=$JIRA_ISSUE" >> $GITHUB_ENV
+
+      - name: Transition Jira Issue to Done
+        uses: atlassian/gajira-transition@v3
+        with:
+          issue: ${{ env.JIRA_ISSUE }}
+          transition: "완료" # Jira 워크플로의 "완료" 상태 트랜지션 이름

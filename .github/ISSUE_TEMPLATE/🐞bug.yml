@@ -1,0 +1,30 @@
+name: "🐞 BUG"
+description: "소프트웨어의 오류나 예상치 못한 동작을 수정하기 위한 작업입니다. 문제의 원인을 분석하고 시스템의 정상적인 작동을 복원합니다."
+labels: [bug]
+title: "[BUG] 이슈 이름을 작성해주세요"
+
+body:
+  - type: input
+    id: parentKey
+    attributes:
+      label: "상위 작업 Ticket Number"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "GH-1234"
+    validations:
+      required: true
+
+  - type: input
+    id: bugSummary
+    attributes:
+      label: "버그 요약"
+      description: "발생한 문제나 오류를 간략히 설명해주세요"
+    validations:
+      required: true
+
+  - type: textarea
+    id: reproductionSteps
+    attributes:
+      label: "재현 절차"
+      description: "문제가 발생하는 과정을 설명해주세요"
+    validations:
+      required: true

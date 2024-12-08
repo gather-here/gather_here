@@ -1,0 +1,33 @@
+name: "🗑️ DEL"
+description: "불필요하거나 더 이상 사용되지 않는 기능을 제거하여 시스템을 간소화하고 유지보수성을 향상시키기 위한 작업입니다."
+labels: [del]
+title: "[DEL] 이슈 이름을 작성해주세요"
+
+body:
+  - type: input
+    id: parentKey
+    attributes:
+      label: "상위 작업 Ticket Number"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "GH-1234"
+    validations:
+      required: true
+
+  - type: input
+    id: featureToRemove
+    attributes:
+      label: "제거할 기능"
+      description: "삭제할 기능의 이름을 입력해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+    validations:
+      required: true
+
+  - type: textarea
+    id: removalReason
+    attributes:
+      label: "제거 이유"
+      description: "기능 제거 이유와 예상 영향을 설명해주세요"
+    validations:
+      required: true

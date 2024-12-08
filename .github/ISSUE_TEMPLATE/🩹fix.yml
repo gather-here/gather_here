@@ -1,0 +1,37 @@
+name: "🛠️ FIX"
+description: "작은 오류나 사소한 문제를 해결하기 위한 작업입니다. 기능적 문제는 아니지만 코드, UI, 설정 등의 사소한 부분을 수정합니다."
+labels: [fix]
+title: "[FIX] 이슈 이름을 작성해주세요"
+
+body:
+  - type: input
+    id: parentKey
+    attributes:
+      label: "상위 작업 Ticket Number"
+      description: "상위 작업의 Ticket Number를 기입해주세요"
+      placeholder: "GH-1234"
+    validations:
+      required: true
+
+  - type: input
+    id: fixTarget
+    attributes:
+      label: "수정할 대상"
+      description: "수정이 필요한 파일, UI 요소, 설정 등을 입력해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+    validations:
+      required: true
+
+  - type: textarea
+    id: fixSummary
+    attributes:
+      label: "수정 내용"
+      description: "수정해야 할 부분과 예상 결과를 간략히 설명해주세요"
+      value: |
+        - 수정 대상
+        - 수정 이유
+        - 예상 결과
+    validations:
+      required: true
