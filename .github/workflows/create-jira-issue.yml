@@ -20,11 +20,47 @@ jobs:
         with:
           ref: main
 
-      - name: Issue Parser
+      - name: Issue Parser - Refactor
         uses: stefanbuck/github-issue-praser@v3
-        id: issue-parser
+        id: issue-parser-refactor
         with:
-          template-path: .github/ISSUE_TEMPLATE/issue-form.yml
+          template-path: .github/ISSUE_TEMPLATE/refactor.yml
+
+      - name: Issue Parser - Update
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-update
+        with:
+          template-path: .github/ISSUE_TEMPLATE/update.yml
+
+      - name: Issue Parser - Style
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-style
+        with:
+          template-path: .github/ISSUE_TEMPLATE/style.yml
+
+      - name: Issue Parser - Bug
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-bug
+        with:
+          template-path: .github/ISSUE_TEMPLATE/bug.yml
+
+      - name: Issue Parser - Feature
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-feature
+        with:
+          template-path: .github/ISSUE_TEMPLATE/feature.yml
+
+      - name: Issue Parser - Del
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-del
+        with:
+          template-path: .github/ISSUE_TEMPLATE/del.yml
+
+      - name: Issue Parser - Fix
+        uses: stefanbuck/github-issue-praser@v3
+        id: issue-parser-fix
+        with:
+          template-path: .github/ISSUE_TEMPLATE/fix.yml
 
       - name: Log Issue Parser
         run: |

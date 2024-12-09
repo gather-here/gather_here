@@ -8,26 +8,47 @@ body:
     id: parentKey
     attributes:
       label: "상위 작업 Ticket Number"
-      description: "상위 작업의 Ticket Number를 기입해주세요"
-      placeholder: "GH-1234"
+      description: "상위 작업의 Ticket Number를 기입해주세요 (예: GH-1234)"
     validations:
       required: true
 
   - type: input
-    id: uiElement
+    id: description
     attributes:
-      label: "수정할 UI 요소"
-      description: "수정이 필요한 UI 요소 (버튼, 텍스트 등)"
-      value: |
-        - [ ] Task1
-        - [ ] Task2
+      label: "스타일 수정 요약 (Description)"
+      description: "이 스타일 개선 작업에 대해 간략히 설명해주세요 (예: 버튼 색상 수정, 레이아웃 조정)"
     validations:
       required: true
 
   - type: textarea
-    id: styleChanges
+    id: details
     attributes:
-      label: "디자인 변경 사항"
-      description: "디자인 변경 내용과 예상 시각적 결과를 설명해주세요"
+      label: "스타일 개선 상세 내용 (Details)"
+      description: "작업의 배경, 목적 및 기대되는 시각적 개선을 구체적으로 작성해주세요"
+      value: |
+        - **작업 배경 및 목적:**
+
     validations:
       required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "스타일 수정 체크리스트 (Tasks)"
+      description: "해당 이슈에 대해 필요한 스타일 작업 목록을 작성해주세요"
+      value: |
+        - [ ] task1
+        - [ ] task2
+        - [ ] task3
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "참조 자료 (References)"
+      description: "이슈와 관련된 디자인 가이드나 기존 참조 자료를 첨부해주세요"
+      value: |
+        -
+    validations:
+      required: false

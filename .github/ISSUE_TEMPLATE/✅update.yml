@@ -8,26 +8,47 @@ body:
     id: parentKey
     attributes:
       label: "상위 작업 Ticket Number"
-      description: "상위 작업의 Ticket Number를 기입해주세요"
-      placeholder: "GH-1234"
+      description: "상위 작업의 Ticket Number를 기입해주세요 (예: GH-1234)"
     validations:
       required: true
 
   - type: input
-    id: featureToUpdate
+    id: description
     attributes:
-      label: "개선할 기능"
-      description: "수정 또는 개선할 주요 기능을 입력해주세요"
-      value: |
-        - [ ] Task1
-        - [ ] Task2
+      label: "업데이트 요약 (Description)"
+      description: "이 업데이트의 목적과 주요 내용을 간략히 작성해주세요 (ex: 로그인 속도 개선)"
     validations:
       required: true
 
   - type: textarea
-    id: improvementSummary
+    id: details
     attributes:
-      label: "개선 사항"
-      description: "변경할 주요 내용과 기대 결과를 간략히 설명해주세요"
+      label: "업데이트 상세 내용 (Details)"
+      description: "작업의 배경, 목적 및 기대되는 결과를 자세히 작성해주세요"
+      value: |
+        - **작업 배경 및 목적:**
+
     validations:
       required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "업데이트 체크리스트 (Tasks)"
+      description: "업데이트에 필요한 작업 목록을 작성해주세요"
+      value: |
+        - [ ] task1
+        - [ ] task2
+        - [ ] task3
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "관련 자료 (References)"
+      description: "이슈와 관련된 문서나 링크를 참조해주세요 (예: 관련 티켓, 기술 문서)"
+      value: |
+        -
+    validations:
+      required: false

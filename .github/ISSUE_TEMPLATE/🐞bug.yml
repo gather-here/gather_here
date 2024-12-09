@@ -1,5 +1,5 @@
 name: "🐞 BUG"
-description: "소프트웨어의 오류나 예상치 못한 동작을 수정하기 위한 작업입니다. 문제의 원인을 분석하고 시스템의 정상적인 작동을 복원합니다."
+description: "기존 기능의 오류를 수정하고 시스템 안정성을 개선하기 위한 작업입니다."
 labels: [bug]
 title: "[BUG] 이슈 이름을 작성해주세요"
 
@@ -8,23 +8,60 @@ body:
     id: parentKey
     attributes:
       label: "상위 작업 Ticket Number"
-      description: "상위 작업의 Ticket Number를 기입해주세요"
-      placeholder: "GH-1234"
+      description: "상위 작업의 Ticket Number를 기입해주세요 (예: GH-1234)"
     validations:
       required: true
 
   - type: input
-    id: bugSummary
+    id: description
     attributes:
-      label: "버그 요약"
-      description: "발생한 문제나 오류를 간략히 설명해주세요"
+      label: "버그 요약 (Description)"
+      description: "버그의 주요 증상과 문제를 간략히 설명해주세요 (예: 로그인 시 오류 메시지 발생)"
     validations:
       required: true
 
   - type: textarea
-    id: reproductionSteps
+    id: details
     attributes:
-      label: "재현 절차"
-      description: "문제가 발생하는 과정을 설명해주세요"
+      label: "버그 상세 내용 (Details)"
+      description: "버그가 발생한 상황과 재현 방법, 기대 결과 및 실제 결과를 작성해주세요"
+      value: |
+        - **발생 환경:**  (예: 브라우저, OS, 버전 정보)  
+         
+
+        - **문제 상황:**  (예: 로그인 버튼 클릭 시 500 에러 발생)
+          
+
+        - **재현 방법:**  
+          1.
+          2. 
+
+        - **기대 결과:**   (예: 정상적으로 대시보드로 이동해야 합니다.)  
+         
+
+        - **실제 결과:**   (예: 500 Internal Server Error가 발생합니다.)
+
     validations:
       required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "버그 수정 체크리스트 (Tasks)"
+      description: "버그를 해결하기 위해 필요한 작업 목록을 작성해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+        - [ ] Task3
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "관련 자료 (References)"
+      description: "이슈와 관련된 문서, 로그, 스크린샷 또는 링크를 첨부해주세요 (예: 관련 티켓, 에러 로그)"
+      value: |
+        -
+    validations:
+      required: false

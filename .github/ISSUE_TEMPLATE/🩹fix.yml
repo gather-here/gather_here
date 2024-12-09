@@ -8,30 +8,50 @@ body:
     id: parentKey
     attributes:
       label: "상위 작업 Ticket Number"
-      description: "상위 작업의 Ticket Number를 기입해주세요"
-      placeholder: "GH-1234"
+      description: "상위 작업의 Ticket Number를 기입해주세요 (예: GH-1234)"
     validations:
       required: true
 
   - type: input
-    id: fixTarget
+    id: description
     attributes:
-      label: "수정할 대상"
-      description: "수정이 필요한 파일, UI 요소, 설정 등을 입력해주세요"
-      value: |
-        - [ ] Task1
-        - [ ] Task2
+      label: "수정 요약 (Description)"
+      description: "수정하려는 문제에 대해 간략히 설명해주세요 (예: 버튼 텍스트 오타 수정)"
     validations:
       required: true
 
   - type: textarea
-    id: fixSummary
+    id: details
     attributes:
-      label: "수정 내용"
-      description: "수정해야 할 부분과 예상 결과를 간략히 설명해주세요"
+      label: "수정 상세 내용 (Details)"
+      description: "수정이 필요한 문제의 배경, 원인 및 기대되는 결과를 작성해주세요"
       value: |
-        - 수정 대상
-        - 수정 이유
-        - 예상 결과
+        - **작업 배경 및 목적:**  (예: 버튼 텍스트에 오타가 있어 사용자 혼란이 발생하고 있습니다.)
+          
+
+        - **수정할 항목:**  (예: 'Submit' 버튼 텍스트를 'Save'로 수정)
+
     validations:
       required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "수정 체크리스트 (Tasks)"
+      description: "수정을 위해 필요한 작업 목록을 작성해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+        - [ ] Task3
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "관련 자료 (References)"
+      description: "이슈와 관련된 문서, 링크 또는 기존 이슈를 첨부해주세요"
+      value: |
+        -
+    validations:
+      required: false

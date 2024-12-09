@@ -8,26 +8,50 @@ body:
     id: parentKey
     attributes:
       label: "상위 작업 Ticket Number"
-      description: "상위 작업의 Ticket Number를 기입해주세요"
-      placeholder: "GH-1234"
+      description: "상위 작업의 Ticket Number를 기입해주세요 (예: GH-1234)"
     validations:
       required: true
 
   - type: input
-    id: refactorTask
+    id: description
     attributes:
-      label: "체크리스트(Tasks)"
-      description: "수정할 코드 범위 또는 파일의 작업목록을 작성해주세요"
-      value: |
-        - [ ] Task1
-        - [ ] Task2
+      label: "리팩토링 요약 (Description)"
+      description: "리팩토링의 목적과 주요 내용을 간략히 작성해주세요 (예: 코드 중복 제거 및 함수 분리)"
     validations:
       required: true
 
   - type: textarea
-    id: refactorReason
+    id: details
     attributes:
-      label: "리팩토링 이유"
-      description: "리팩토링이 필요한 이유와 기대하는 결과를 설명해주세요"
+      label: "리팩토링 상세 내용 (Details)"
+      description: "리팩토링이 필요한 이유, 변경할 코드 영역, 기대되는 결과를 작성해주세요"
+      value: |
+        - **작업 배경 및 목적:**  (예: 코드 중복으로 인해 유지보수가 어려워져 중복 제거가 필요합니다.)
+         
+
+        - **리팩토링 대상:**  (예: `UserService` 파일의 사용자 데이터 처리 로직)
+
     validations:
       required: true
+
+  - type: textarea
+    id: tasks
+    attributes:
+      label: "리팩토링 체크리스트 (Tasks)"
+      description: "리팩토링을 위해 필요한 작업 목록을 작성해주세요"
+      value: |
+        - [ ] Task1
+        - [ ] Task2
+        - [ ] Task3
+    validations:
+      required: true
+
+  - type: textarea
+    id: references
+    attributes:
+      label: "관련 자료 (References)"
+      description: "리팩토링과 관련된 문서, 링크 또는 기존 이슈를 첨부해주세요"
+      value: |
+        -
+    validations:
+      required: false
