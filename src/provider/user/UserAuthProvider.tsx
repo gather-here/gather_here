@@ -78,7 +78,7 @@ export const UserAuthProvider: React.FC<{ children: ReactNode }> = ({ children }
   }, [router]);
 
   // 자동 로그인 여부에 따라 세션을 관리하는 훅 실행
-  useSessionManager(resetAuthUser, rememberMe);
+  useSessionManager(resetAuthUser, rememberMe, user);
 
   // 앱 로드 시, 기존 세션이 있는지 확인
   useEffect(() => {
@@ -125,3 +125,4 @@ export const useAuth = (): AuthState => {
   }
   return context;
 };
+

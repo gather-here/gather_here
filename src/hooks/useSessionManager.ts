@@ -1,11 +1,11 @@
 import { useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/utils/supabase/client";
+import { User } from '@supabase/supabase-js';
 import { throttle } from "lodash";
 
-export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe: boolean) => {
+export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe: boolean, user: User | null) => {
   const router = useRouter();
-  
   const lastActivityTimeRef = useRef<number>(Date.now()); // 마지막 사용자 활동 시간을 저장하는 변수
   const sessionTimeoutRef = useRef<NodeJS.Timeout | null>(null); // 자동 로그아웃 타이머를 관리하는 변수
   const activityCheckIntervalRef = useRef<NodeJS.Timeout | null>(null); // 비활성 탭 체크 타이머를 관리하는 변수
@@ -22,6 +22,8 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
   // 자동 로그인 사용자는 활동 감지를 하지 않음. 대신 55분마다 세션 갱신.
   useEffect(() => {
     if (rememberMe) {
+      console.log("자동 로그인 활성화됨: 세션 유지 중...");
+
       const interval = setInterval(() => {
         void (async () => {
           const { data, error } = await supabase.auth.getSession();
@@ -29,16 +31,20 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
           if (error || !data.session) {
             console.error("세션 갱신 실패:", error);
             await resetAuthUser(); // 세션 만료 시 로그아웃 처리
-          } 
+          } else {
+          console.log("세션이 정상 유지됨.");
+          }
         }) ();
         }, 55 * 60 * 1000); // 55분마다 세션 갱신 시도
 
       return () => clearInterval(interval);
     }
-  }, [rememberMe, resetAuthUser]);
+  }, [rememberMe, resetAuthUser, user]);
 
   // 사용자의 활동이 감지될 때마다 세션 타이머를 리셋하여 1시간 동안 활동이 없을 때만 로그아웃되도록 설정
   const resetSessionTimer = () => {
+    if (!user) return; // 유저 없으면 아예 감지 무시
+    console.log("사용자 활동 감지됨: 세션 연장");
     lastActivityTimeRef.current = Date.now(); // 마지막 활동 시간 업데이트
 
     // 기존 세션 타이머 제거
@@ -53,7 +59,9 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
         
         // 1시간 동안 추가 활동이 없으면 로그아웃 처리
         if (timeSinceLastActivity >= 60 * 60 * 1000) {
+          console.log("1시간 동안 활동 없음: 자동 로그아웃");
           await resetAuthUser();
+
           // 로그아웃 후 세션 만료 여부를 최종 확인 후 페이지 이동
           const { data } = await supabase.auth.getSession();
           if (!data.session) {
@@ -89,12 +97,14 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
       activityHandler.cancel();
       if (sessionTimeoutRef.current) clearTimeout(sessionTimeoutRef.current);
     };
-  }, [resetAuthUser, rememberMe]);
+  }, [resetAuthUser, rememberMe, user]);
 
   // 사용자가 탭을 비활성화할 경우, 동적 스로틀링을 적용하여 감지 간격을 점진적으로 증가
   useEffect(() => {
     const handleVisibilityChange = () => {
       if (document.hidden) {
+        console.log("탭이 비활성화됨: 로그아웃 감지 시작");
+
         let elapsedInactiveTime = 0;
         let checkDelay = 10 * 60 * 1000; // 초기 감지 간격 10분
 
@@ -108,6 +118,7 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
             
             const timeSinceLastActivity = Date.now() - lastActivityTimeRef.current;
             if (timeSinceLastActivity >= 60 * 60 * 1000) {
+              console.log("1시간 동안 활동 없음 (비활성 탭 포함): 자동 로그아웃");
               
               await resetAuthUser();
               
@@ -124,6 +135,7 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
         if (activityCheckIntervalRef.current) {
           clearInterval(activityCheckIntervalRef.current);
           activityCheckIntervalRef.current = null;
+          console.log("탭이 다시 활성화됨: 자동 로그아웃 감지 중지");
         }
       }
     };
@@ -140,3 +152,4 @@ export const useSessionManager = (resetAuthUser: () => Promise<void>, rememberMe
 
   return {};
 };
+
