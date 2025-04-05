@@ -1,28 +1,27 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState, useRef } from "react";
-import { usePathname, useRouter } from "next/navigation";
-import { supabase } from "@/utils/supabase/client";
-import DOMPurify from "dompurify";
-import Image from "next/image";
-import "react-quill/dist/quill.snow.css";
-import "react-quill/dist/quill.bubble.css";
-import "react-quill/dist/quill.core.css";
-import LikeButton from "@/components/MainDetail/LikeButton";
-import ShareButton from "@/components/MainDetail/ShareButton";
-import CommonModal from "@/components/Common/Modal/CommonModal";
-import { secureImageUrl } from "@/utils/imageUtils";
-
-
+import React, { useEffect, useState, useRef } from 'react';
+import { usePathname, useRouter } from 'next/navigation';
+import { supabase } from '@/utils/supabase/client';
+import DOMPurify from 'dompurify';
+import Image from 'next/image';
+import 'react-quill/dist/quill.snow.css';
+import 'react-quill/dist/quill.bubble.css';
+import 'react-quill/dist/quill.core.css';
+import LikeButton from '@/components/MainDetail/LikeButton';
+import ShareButton from '@/components/MainDetail/ShareButton';
+import CommonModal from '@/components/Common/Modal/CommonModal';
+import { secureImageUrl } from '@/utils/imageUtils';
+import { Post, User } from '@/types/posts/Post.type';
+import { useUserData } from '@/provider/user/UserDataProvider';
 
 const MainDetailPage = () => {
   const pathname = usePathname();
   const router = useRouter();
-  const id = pathname.split("/").pop() as string;
-  const [post, setPost] = useState<any>(null);
-  const [user, setUser] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
-  const [currentUser, setCurrentUser] = useState<any>(null);
+  const id = pathname.split('/').pop()!;
+  const [post, setPost] = useState<Post>();
+  const [user, setUser] = useState<User>();
+  const { userData } = useUserData();
   const [showOptions, setShowOptions] = useState(false);
   const [showDeleteModal, setShowDeleteModal] = useState(false);
   const optionsRef = useRef<HTMLDivElement>(null);
@@ -31,42 +30,32 @@ const MainDetailPage = () => {
     const fetchPostAndUser = async () => {
       if (id) {
         const { data: postData, error: postError } = await supabase
-          .from("Posts")
-          .select("*")
-          .eq("post_id", id)
+          .from('Posts')
+          .select('*')
+          .eq('post_id', id)
           .single();
 
         if (postError) {
-          setLoading(false);
-          return;
+          return <div>게시글을 불러오는 과정에서 문제가 발생했습니다.</div>;
         }
 
         setPost(postData);
 
-        const { data: userData, error: userError } = await supabase
-          .from("Users")
-          .select("profile_image_url, nickname, job_title, experience")
-          .eq("user_id", postData.user_id)
+        const { data, error } = await supabase
+          .from('Users')
+          .select('profile_image_url, nickname')
+          .eq('user_id', postData.user_id)
           .single();
 
-        if (userError) {
-          console.error("Error fetching user:", userError);
+        if (error) {
+          console.error('Error fetching user:', error);
         } else {
-          setUser(userData);
+          setUser(data);
         }
-
-        const { data: currentUserData, error: currentUserError } = await supabase.auth.getUser();
-        if (currentUserError) {
-          console.error("Error fetching current user:", currentUserError);
-        } else {
-          setCurrentUser(currentUserData?.user);
-        }
-
-        setLoading(false);
       }
     };
 
-    fetchPostAndUser();
+    void fetchPostAndUser();
   }, [id]);
 
   const handleMoreOptions = () => {
@@ -80,9 +69,9 @@ const MainDetailPage = () => {
       }
     };
 
-    document.addEventListener("mousedown", handleClickOutside);
+    document.addEventListener('mousedown', handleClickOutside);
     return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
+      document.removeEventListener('mousedown', handleClickOutside);
     };
   }, [optionsRef]);
 
@@ -99,25 +88,17 @@ const MainDetailPage = () => {
     return `${days}일 전`;
   };
 
-  const handleBackClick = () => {
-    const previousPage = localStorage.getItem("previousPage");
-    if (previousPage) {
-      router.push(previousPage);
-    } else {
-      router.push("/all");
-    }
-  };
-
   const handleDelete = async () => {
-    if (!currentUser || currentUser.id !== post.user_id) {
-      alert("본인의 글만 삭제할 수 있습니다.");
+    if (userData?.user_id !== post?.user_id) {
+      alert('본인의 글만 삭제할 수 있습니다.');
       return;
     }
 
-    const { error } = await supabase.from("Posts").delete().eq("post_id", id);
+    const { error } = await supabase.from('Posts').delete().eq('post_id', id);
     if (error) {
+      throw Error('게시글 삭제 과정에서 문제가 발생했습니다.');
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -125,27 +106,27 @@ const MainDetailPage = () => {
 
   const cleanContent = DOMPurify.sanitize(post.content, {
     ALLOWED_TAGS: [
-      "b",
-      "i",
-      "em",
-      "strong",
-      "a",
-      "h1",
-      "h2",
-      "h3",
-      "p",
-      "span",
-      "ul",
-      "ol",
-      "li",
-      "br",
-      "gt",
-      "lt",
-      "amp",
+      'b',
+      'i',
+      'em',
+      'strong',
+      'a',
+      'h1',
+      'h2',
+      'h3',
+      'p',
+      'span',
+      'ul',
+      'ol',
+      'li',
+      'br',
+      'gt',
+      'lt',
+      'amp',
     ],
-    ALLOWED_ATTR: ["href", "target", "style", "class"],
+    ALLOWED_ATTR: ['href', 'target', 'style', 'class'],
   });
-  
+
   const renderTechStackIcons = (techStack: string[]) => {
     return techStack.map((tech) => (
       <div key={tech} className="inline-flex items-center mr-1">
@@ -157,7 +138,7 @@ const MainDetailPage = () => {
               width={20}
               height={20}
               className="mr-1"
-              style={{ width: "20px", height: "20px" }}
+              style={{ width: '20px', height: '20px' }}
             />
           </div>
           <span className="text-baseS text-labelNeutral">{tech}</span>
@@ -170,7 +151,7 @@ const MainDetailPage = () => {
     <>
       <div className="w-full mx-auto max-w-[672px] s:max-w-container-s bg-background text-fontWhite rounded-lg">
         <button
-          onClick={() => router.push("/")}
+          onClick={() => router.push('/')}
           className="text-labelNeutral mt-5 mb-4 flex items-center space-x-2 group"
         >
           <div className="relative">
@@ -194,7 +175,7 @@ const MainDetailPage = () => {
             {user?.profile_image_url && (
               <Image
                 src={secureImageUrl(user.profile_image_url)}
-                alt={user.nickname}
+                alt={`${user.nickname} 님의 프로필 사진`}
                 width={28}
                 height={28}
                 className="rounded-md object-cover w-[28px] h-[28px]"
@@ -205,8 +186,8 @@ const MainDetailPage = () => {
           </div>
           <div className="flex items-center">
             <ShareButton />
-            <LikeButton postId={id} currentUser={currentUser} category={post.category} />
-            {currentUser?.id === post.user_id && (
+            <LikeButton postId={id} currentUser={userData} category={post.category} />
+            {userData?.user_id === post.user_id && (
               <div className="relative ml-2" ref={optionsRef}>
                 <button onClick={handleMoreOptions} className="flex items-center">
                   <Image src="/Detail/edit-delete.svg" alt="More Options" width={20} height={20} className="ml-1" />
@@ -242,15 +223,15 @@ const MainDetailPage = () => {
         <div className="flex mb-4 flex-wrap">
           <div className="w-1/2 s:w-full">
             <p className="mb-4 flex">
-              <strong className="text-labelNeutral w-20 font-baseBold">분류</strong>{" "}
+              <strong className="text-labelNeutral w-20 font-baseBold">분류</strong>{' '}
               <span className="ml-5">{post.category}</span>
             </p>
             <p className="mb-4 flex">
-              <strong className="text-labelNeutral w-20 font-baseBold">지역</strong>{" "}
+              <strong className="text-labelNeutral w-20 font-baseBold">지역</strong>{' '}
               <span className="ml-5">{post.location}</span>
             </p>
             <p className="mb-4 flex">
-              <strong className="text-labelNeutral w-20 font-baseBold">기간</strong>{" "}
+              <strong className="text-labelNeutral w-20 font-baseBold">기간</strong>{' '}
               <span className="ml-5">{post.duration}개월</span>
             </p>
             <p className="mb-4 flex">
@@ -266,7 +247,7 @@ const MainDetailPage = () => {
             <hr className="hidden s:block border-fillNeutral my-5" />
             <p className="mb-4 flex">
               <strong className="text-labelNeutral w-20 font-baseBold flex-shrink-0">모집 대상</strong>
-              <span className="ml-5 text-left">{post.target_position.join(", ")}</span>
+              <span className="ml-5 text-left">{post.target_position.join(', ')}</span>
             </p>
             <p className="mb-4 flex">
               <strong className="text-labelNeutral w-20 font-baseBold">모집 인원</strong>
@@ -278,7 +259,7 @@ const MainDetailPage = () => {
               <span className="ml-5">{new Date(post.deadline).toLocaleDateString()}</span>
             </p>
             <p className="mb-4 flex">
-              <strong className="text-labelNeutral w-20 font-baseBold">장소</strong>{" "}
+              <strong className="text-labelNeutral w-20 font-baseBold">장소</strong>{' '}
               <span className="ml-5">{post.place}</span>
             </p>
             <div className="mb-4 flex items-start">
@@ -310,7 +291,7 @@ const MainDetailPage = () => {
               >
                 안 할래요
               </button>
-              <button onClick={handleDelete} className="px-4 py-2 bg-primary rounded-lg text-fillNeutral">
+              <button onClick={() => void handleDelete()} className="px-4 py-2 bg-primary rounded-lg text-fillNeutral">
                 삭제할래요
               </button>
             </div>

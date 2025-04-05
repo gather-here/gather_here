@@ -1,15 +1,14 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { PostWithUser } from "@/types/posts/Post.type";
-import Image from "next/image";
-import Link from "next/link";
-import DOMPurify from "dompurify";
-import LikeButton from "@/components/MainDetail/LikeButton";
-import { useAuth } from "@/provider/user/UserAuthProvider"
-import dayjs from "dayjs";
-import { secureImageUrl } from "@/utils/imageUtils";
-
+import React, { useEffect, useState } from 'react';
+import { PostWithUser } from '@/types/posts/Post.type';
+import Image from 'next/image';
+import Link from 'next/link';
+import DOMPurify from 'dompurify';
+import LikeButton from '@/components/MainDetail/LikeButton';
+import { useAuth } from '@/provider/user/UserAuthProvider';
+import dayjs from 'dayjs';
+import { secureImageUrl } from '@/utils/imageUtils';
 
 interface PostCardProps {
   post: PostWithUser;
@@ -24,8 +23,7 @@ const PostCardShort: React.FC<PostCardProps> = ({ post }) => {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.ceil((deadlineDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  const displayDaysLeft = daysLeft === 0 ? "D-day" : `D-${daysLeft.toFixed(0)}`;
-  const defaultImage = "/assets/header/user.svg";
+  const displayDaysLeft = daysLeft === 0 ? 'D-day' : `D-${daysLeft.toFixed(0)}`;
 
   useEffect(() => {
     setIsMounted(true);
@@ -35,16 +33,16 @@ const PostCardShort: React.FC<PostCardProps> = ({ post }) => {
     };
   }, [post]);
 
-  const jobTitleClassMap: { [key: string]: string } = {
-    프론트엔드: "text-primary",
-    IOS: "text-accentPurple",
-    안드로이드: "text-accentRed",
-    PM: "text-accentColumbia",
-    기획자: "text-accentPink",
-    마케터: "text-accentYellow",
-    백엔드: "text-accentOrange",
-    디자이너: "text-accentMaya",
-    데브옵스: "text-accentMint",
+  const jobTitleClassMap: Record<string, string> = {
+    프론트엔드: 'text-primary',
+    IOS: 'text-accentPurple',
+    안드로이드: 'text-accentRed',
+    PM: 'text-accentColumbia',
+    기획자: 'text-accentPink',
+    마케터: 'text-accentYellow',
+    백엔드: 'text-accentOrange',
+    디자이너: 'text-accentMaya',
+    데브옵스: 'text-accentMint',
   };
 
   const cleanContent = DOMPurify.sanitize(post.content, { ALLOWED_TAGS: [], ALLOWED_ATTR: [] });
@@ -59,7 +57,7 @@ const PostCardShort: React.FC<PostCardProps> = ({ post }) => {
                 <span className="label-secondary rounded-full text-baseS  px-3 py-1.5 mr-1">{displayDaysLeft}</span>
               </li>
               <li className="text-baseS  text-labelNormal ml-2">
-                <time dateTime="YYYY-MM-DD">~{dayjs(post.deadline).format("YY.MM.DD")}</time>
+                <time dateTime="YYYY-MM-DD">~{dayjs(post.deadline).format('YY.MM.DD')}</time>
               </li>
             </ul>
           ) : null}
@@ -90,18 +88,18 @@ const PostCardShort: React.FC<PostCardProps> = ({ post }) => {
               <div className="flex-1 text-left truncate">
                 {post.target_position?.length > 0 && (
                   <>
-                    <span className={`${jobTitleClassMap[post.target_position[0]] || "text-default"}`}>
+                    <span className={`${jobTitleClassMap[post.target_position[0]] || 'text-default'}`}>
                       {post.target_position[0]}
                     </span>
                     {post.target_position.length > 1 && (
-                      <span className={`${jobTitleClassMap[post.target_position[0]] || "text-default"}`}>
+                      <span className={`${jobTitleClassMap[post.target_position[0]] || 'text-default'}`}>
                         +{post.target_position.length - 1}
                       </span>
                     )}
                   </>
                 )}
               </div>
-              <div className={`mr-2 ${jobTitleClassMap[post.target_position?.[0]] || "text-default"}`}>
+              <div className={`mr-2 ${jobTitleClassMap[post.target_position?.[0]] || 'text-default'}`}>
                 {post.recruitments}명
               </div>
               <div className="flex items-center">
@@ -110,7 +108,7 @@ const PostCardShort: React.FC<PostCardProps> = ({ post }) => {
                   alt="Puzzle Icon"
                   width={10}
                   height={10}
-                  style={{ width: "auto", height: "auto" }}
+                  style={{ width: 'auto', height: 'auto' }}
                 />
               </div>
             </div>

@@ -1,30 +1,30 @@
-"use client";
+'use client';
 
-import React, { useEffect, useState } from "react";
-import { useAuth } from "@/provider/user/UserAuthProvider";
-import { Tables } from "@/types/supabase";
-import { NextPage } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import LikeButton from "@/components/EventsDetail/ITLikeButton";
-import dayjs from "dayjs";
-import "dayjs/locale/ko";
+import React, { useEffect, useState } from 'react';
+import { Tables } from '@/types/supabase';
+import { NextPage } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import LikeButton from '@/components/EventsDetail/ITLikeButton';
+import dayjs from 'dayjs';
+import 'dayjs/locale/ko';
+import { useUserData } from '@/provider/user/UserDataProvider';
 
 interface EventsCardProps {
-  post: Tables<"IT_Events">;
+  post: Tables<'IT_Events'>;
   style?: React.CSSProperties;
   onRemoveBookmark?: () => void;
 }
 
 const ItEventCardShort: NextPage<EventsCardProps> = ({ post, onRemoveBookmark }) => {
-  const { user: currentUser } = useAuth();
+  const { userData } = useUserData();
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const deadlineDate = new Date(post.date_done);
   deadlineDate.setHours(0, 0, 0, 0);
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.ceil((deadlineDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  const displayDaysLeft = daysLeft === 0 ? "D-day" : `D-${daysLeft.toFixed(0)}`;
+  const displayDaysLeft = daysLeft === 0 ? 'D-day' : `D-${daysLeft.toFixed(0)}`;
 
   useEffect(() => {
     setIsMounted(true);
@@ -34,7 +34,7 @@ const ItEventCardShort: NextPage<EventsCardProps> = ({ post, onRemoveBookmark })
     };
   }, []);
 
-  dayjs.locale("ko");
+  dayjs.locale('ko');
 
   return (
     <article className="w-full h-full max-w-container-l m:max-w-container-m s:max-w-container-s">
@@ -46,10 +46,10 @@ const ItEventCardShort: NextPage<EventsCardProps> = ({ post, onRemoveBookmark })
             </li>
             <li>
               <time dateTime={post.date_done} className="text-baseS text-labelNormal">
-                {dayjs(post.apply_done).format("YY.MM.DD (ddd)")}
+                {dayjs(post.apply_done).format('YY.MM.DD (ddd)')}
               </time>
             </li>
-            <LikeButton eventId={post.event_id} currentUser={currentUser} onRemoveBookmark={onRemoveBookmark} />
+            <LikeButton eventId={post.event_id} currentUser={userData} onRemoveBookmark={onRemoveBookmark} />
           </ul>
         ) : null}
         <Link href={`/eventsdetail/${post.event_id}`}>

@@ -1,12 +1,14 @@
-import { PostWithUser } from "@/types/posts/Post.type";
-import Image from "next/image";
-import React, { useEffect, useState } from "react";
-import Link from "next/link";
-import dayjs from "dayjs";
-import { useAuth } from "@/provider/user/UserAuthProvider";
-import LikeButton from "@/components/MainDetail/LikeButton";
-import { secureImageUrl } from "@/utils/imageUtils";
+'use client';
 
+import { PostWithUser } from '@/types/posts/Post.type';
+import Image from 'next/image';
+import React, { useEffect, useState } from 'react';
+import Link from 'next/link';
+import dayjs from 'dayjs';
+import { useAuth } from '@/provider/user/UserAuthProvider';
+import LikeButton from '@/components/MainDetail/LikeButton';
+import { secureImageUrl } from '@/utils/imageUtils';
+import DOMPurify from 'dompurify';
 
 interface PostCardProps {
   post: PostWithUser;
@@ -21,8 +23,7 @@ const PostCardLong: React.FC<PostCardProps> = ({ post, onRemoveBookmark }) => {
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.ceil((deadlineDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  const displayDaysLeft = daysLeft === 0 ? "D-day" : `D-${daysLeft.toFixed(0)}`;
-  const defaultImage = "/assets/header/user.svg";
+  const displayDaysLeft = daysLeft === 0 ? 'D-day' : `D-${daysLeft.toFixed(0)}`;
 
   useEffect(() => {
     setIsMounted(true);
@@ -33,42 +34,42 @@ const PostCardLong: React.FC<PostCardProps> = ({ post, onRemoveBookmark }) => {
   }, []);
 
   let cleanContent = post.content;
-  if (typeof window !== "undefined" && isMounted) {
-    const DOMPurify = require("dompurify");
+
+  if (typeof window !== 'undefined' && isMounted) {
     cleanContent = DOMPurify.sanitize(post.content, {
       ALLOWED_TAGS: [
-        "b",
-        "i",
-        "em",
-        "strong",
-        "a",
-        "h1",
-        "h2",
-        "h3",
-        "p",
-        "span",
-        "ul",
-        "ol",
-        "li",
-        "br",
-        "gt",
-        "lt",
-        "amp",
+        'b',
+        'i',
+        'em',
+        'strong',
+        'a',
+        'h1',
+        'h2',
+        'h3',
+        'p',
+        'span',
+        'ul',
+        'ol',
+        'li',
+        'br',
+        'gt',
+        'lt',
+        'amp',
       ],
-      ALLOWED_ATTR: ["href", "target", "style", "class"],
+      ALLOWED_ATTR: ['href', 'target', 'style', 'class'],
     });
   }
 
-  const jobTitleClassMap: { [key: string]: string } = {
-    프론트엔드: "text-primary",
-    IOS: "text-accentPurple",
-    안드로이드: "text-accentRed",
-    PM: "text-accentColumbia",
-    기획자: "text-accentPink",
-    마케터: "text-accentYellow",
-    백엔드: "text-accentOrange",
-    디자이너: "text-accentMaya",
-    데브옵스: "text-accentMint",
+  const jobTitleClassMap: Record<string, string> = {
+    프론트엔드: 'text-primary',
+    IOS: 'text-accentPurple',
+    안드로이드: 'text-accentRed',
+    PM: 'text-accentColumbia',
+    기획자: 'text-accentPink',
+    마케터: 'text-accentYellow',
+    백엔드: 'text-accentOrange',
+    디자이너: 'text-accentMaya',
+    데브옵스: 'text-accentMint',
   };
 
   return (
@@ -81,7 +82,7 @@ const PostCardLong: React.FC<PostCardProps> = ({ post, onRemoveBookmark }) => {
               <span className="label-secondary rounded-full text-baseS px-3 py-1.5 mr-1">{displayDaysLeft}</span>
             </li>
             <li className="text-baseS  text-labelNormal ml-2">
-              <time dateTime="YYYY-MM-DD">~{dayjs(post.deadline).format("YY.MM.DD")}</time>
+              <time dateTime="YYYY-MM-DD">~{dayjs(post.deadline).format('YY.MM.DD')}</time>
             </li>
             <li className="absolute right-0">
               <LikeButton
@@ -116,14 +117,14 @@ const PostCardLong: React.FC<PostCardProps> = ({ post, onRemoveBookmark }) => {
         <div className="text-base flex items-center justify-between bg-fillNormal p-3 rounded-lg truncate">
           <div className="flex-1 text-left truncate">
             {post.target_position.map((position, index) => (
-              <span key={index} className={`${jobTitleClassMap[position] || "text-default"}`}>
+              <span key={index} className={`${jobTitleClassMap[position] || 'text-default'}`}>
                 {position}
                 {index < post.target_position.length - 1 && <span className="mx-2 text-labelAssistive">|</span>}
               </span>
             ))}
           </div>
           <div className="flex items-center flex-none">
-            <div className={`mr-2 ${jobTitleClassMap[post.target_position[0]] || "text-default"}`}>
+            <div className={`mr-2 ${jobTitleClassMap[post.target_position[0]] || 'text-default'}`}>
               {post.recruitments}명
             </div>
             <div className="flex items-center">
@@ -132,7 +133,7 @@ const PostCardLong: React.FC<PostCardProps> = ({ post, onRemoveBookmark }) => {
                 alt="Puzzle Icon"
                 width={10}
                 height={10}
-                style={{ width: "auto", height: "auto" }}
+                style={{ width: 'auto', height: 'auto' }}
               />
             </div>
           </div>

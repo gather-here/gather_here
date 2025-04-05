@@ -1,10 +1,10 @@
-import { Tables } from "@/types/supabase";
+import { Tables } from '@/types/supabase';
 
-type ChatUserInfo = {
+interface ChatUserInfo {
   Users: {
     profile_image_url: string;
     nickname: string;
   };
-};
+}
 
-export type MessageRow = Tables<"Messages"> & ChatUserInfo;
+export type MessageRow = Tables<'Messages'> & ChatUserInfo;

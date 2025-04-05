@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect } from 'react';
 
 interface Option {
   value: string;
@@ -22,36 +22,36 @@ interface DraftPost {
 
 const useDraft = () => {
   const [draft, setDraft] = useState<DraftPost>({
-    title: "",
-    category: "",
-    location: "",
-    duration: "",
-    totalMembers: "",
-    personalLink: "",
+    title: '',
+    category: '',
+    location: '',
+    duration: '',
+    totalMembers: '',
+    personalLink: '',
     targetPosition: [],
-    recruitments: "",
+    recruitments: '',
     techStack: [],
-    deadline: "",
-    content: "",
-    place: "",
+    deadline: '',
+    content: '',
+    place: '',
   });
 
   useEffect(() => {
-    const savedDraft = localStorage.getItem("draftPost");
+    const savedDraft = localStorage.getItem('draftPost');
     if (savedDraft) {
       setDraft(JSON.parse(savedDraft) as DraftPost);
     }
   }, []);
 
-   const updateDraft = <K extends keyof DraftPost>(key: K, value: DraftPost[K]) => {
+  const updateDraft = <K extends keyof DraftPost>(key: K, value: DraftPost[K]) => {
     setDraft((prevDraft) => ({ ...prevDraft, [key]: value }));
-   };
-
-  const saveDraft = () => {
-    localStorage.setItem("draftPost", JSON.stringify(draft));
   };
 
-  return [draft, updateDraft, saveDraft] as const;
+  const saveDraft = () => {
+    localStorage.setItem('draftPost', JSON.stringify(draft));
+  };
+
+  return { draft, updateDraft, saveDraft };
 };
 
 export default useDraft;

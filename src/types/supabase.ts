@@ -3,15 +3,41 @@ export type Json = string | number | boolean | null | { [key: string]: Json | un
 export interface Database {
   public: {
     Tables: {
-      Channels: {
+      Channel_participants: {
         Row: {
           channel_id: string;
+          user_id: string | null;
         };
         Insert: {
           channel_id?: string;
+          user_id?: string | null;
         };
         Update: {
           channel_id?: string;
+          user_id?: string | null;
+        };
+        Relationships: [
+          {
+            foreignKeyName: 'channel_participants_channel_id_fkey';
+            columns: ['channel_id'];
+            isOneToOne: true;
+            referencedRelation: 'Channels';
+            referencedColumns: ['channel_id'];
+          },
+        ];
+      };
+      Channels: {
+        Row: {
+          channel_id: string;
+          is_public: boolean | null;
+        };
+        Insert: {
+          channel_id?: string;
+          is_public?: boolean | null;
+        };
+        Update: {
+          channel_id?: string;
+          is_public?: boolean | null;
         };
         Relationships: [];
       };
@@ -26,7 +52,7 @@ export interface Database {
           category?: string | null;
           created_at?: string;
           post_id: string;
-          user_id: string;
+          user_id?: string;
         };
         Update: {
           category?: string | null;
@@ -36,18 +62,18 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: "interests_post_id_fkey";
-            columns: ["post_id"];
+            foreignKeyName: 'interests_post_id_fkey';
+            columns: ['post_id'];
             isOneToOne: false;
-            referencedRelation: "Posts";
-            referencedColumns: ["post_id"];
+            referencedRelation: 'Posts';
+            referencedColumns: ['post_id'];
           },
           {
-            foreignKeyName: "interests_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: 'interests_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
         ];
       };
@@ -117,18 +143,18 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: "IT_Interests_event_id_fkey";
-            columns: ["event_id"];
+            foreignKeyName: 'IT_Interests_event_id_fkey';
+            columns: ['event_id'];
             isOneToOne: false;
-            referencedRelation: "IT_Events";
-            referencedColumns: ["event_id"];
+            referencedRelation: 'IT_Events';
+            referencedColumns: ['event_id'];
           },
           {
-            foreignKeyName: "IT_Interests_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: 'IT_Interests_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
         ];
       };
@@ -156,18 +182,18 @@ export interface Database {
         };
         Relationships: [
           {
-            foreignKeyName: "Messages_channel_id_fkey";
-            columns: ["channel_id"];
+            foreignKeyName: 'Messages_channel_id_fkey';
+            columns: ['channel_id'];
             isOneToOne: false;
-            referencedRelation: "Channels";
-            referencedColumns: ["channel_id"];
+            referencedRelation: 'Channels';
+            referencedColumns: ['channel_id'];
           },
           {
-            foreignKeyName: "Messages_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: 'Messages_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
         ];
       };
@@ -184,7 +210,7 @@ export interface Database {
           post_id: string;
           recruitments: number;
           target_position: string[];
-          tech_stack: string[] | null;
+          tech_stack: string[];
           title: string | null;
           total_members: number;
           user_id: string;
@@ -201,7 +227,7 @@ export interface Database {
           post_id?: string;
           recruitments: number;
           target_position: string[];
-          tech_stack?: string[] | null;
+          tech_stack: string[];
           title?: string | null;
           total_members: number;
           user_id?: string;
@@ -218,143 +244,155 @@ export interface Database {
           post_id?: string;
           recruitments?: number;
           target_position?: string[];
-          tech_stack?: string[] | null;
+          tech_stack?: string[];
           title?: string | null;
           total_members?: number;
           user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "Posts_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: 'Posts_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
-          },
-        ];
-      };
-
-      Users: {
-        Row: {
-          blog: string | null;
-          created_at: string | null;
-          email: string | null;
-          experience: string | null;
-          job_title: string | null;
-          nickname: string | null;
-          profile_image_url: string | null;
-          background_image_url?: string | null;
-          description?: string | null;
-          hubCard?: boolean;
-          user_id: string;
-          answer1: string | null;
-          answer2: string | null;
-          answer3: string | null;
-          first_link_type: string | null;
-          first_link: string | null;
-          second_link_type: string | null;
-          second_link: string | null;
-          tech_stacks: string[] | null;
-        };
-        Insert: {
-          blog?: string | null;
-          created_at?: string | null;
-          email?: string | null;
-          experience?: string | null;
-          job_title?: string | null;
-          nickname?: string | null;
-          profile_image_url?: string | null;
-          user_id?: string;
-        };
-        Update: {
-          blog?: string | null;
-          created_at?: string | null;
-          email?: string | null;
-          experience?: string | null;
-          job_title?: string | null;
-          nickname?: string | null;
-          profile_image_url?: string | null;
-          background_image_url?: string | null;
-          hubCard?: boolean;
-          description?: string | null;
-          user_id?: string;
-          answer1?: string;
-          answer2?: string;
-          answer3?: string;
-          tech_stacks?: string[] | null;
-        };
-        Relationships: [
-          {
-            foreignKeyName: "Users_user_id_fkey";
-            columns: ["user_id"];
-            isOneToOne: true;
-            referencedRelation: "users";
-            referencedColumns: ["id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
         ];
       };
       User_Interests: {
         Row: {
-          user_id: string;
-          liked_user_id: string;
           created_at: string;
+          liked_user_id: string;
+          user_id: string;
         };
         Insert: {
-          user_id: string;
-          liked_user_id: string;
           created_at?: string;
+          liked_user_id?: string;
+          user_id?: string;
         };
         Update: {
-          user_id?: string;
-          liked_user_id?: string;
           created_at?: string;
+          liked_user_id?: string;
+          user_id?: string;
         };
         Relationships: [
           {
-            foreignKeyName: "User_Interests_user_id_fkey";
-            columns: ["user_id"];
+            foreignKeyName: 'User_Interests_liked_user_id_fkey';
+            columns: ['liked_user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
           {
-            foreignKeyName: "User_Interests_liked_user_id_fkey";
-            columns: ["liked_user_id"];
+            foreignKeyName: 'User_Interests_user_id_fkey';
+            columns: ['user_id'];
             isOneToOne: false;
-            referencedRelation: "Users";
-            referencedColumns: ["user_id"];
+            referencedRelation: 'Users';
+            referencedColumns: ['user_id'];
           },
         ];
       };
+      Users: {
+        Row: {
+          answer1: string | null;
+          answer2: string | null;
+          answer3: string | null;
+          background_image_url: string | null;
+          blog: string | null;
+          created_at: string | null;
+          description: string | null;
+          email: string | null;
+          experience: string | null;
+          first_link: string | null;
+          first_link_type: string | null;
+          hubCard: boolean | null;
+          job_title: string | null;
+          nickname: string | null;
+          profile_image_url: string | null;
+          second_link: string | null;
+          second_link_type: string | null;
+          tech_stacks: string[] | null;
+          user_id: string;
+        };
+        Insert: {
+          answer1?: string | null;
+          answer2?: string | null;
+          answer3?: string | null;
+          background_image_url?: string | null;
+          blog?: string | null;
+          created_at?: string | null;
+          description?: string | null;
+          email?: string | null;
+          experience?: string | null;
+          first_link?: string | null;
+          first_link_type?: string | null;
+          hubCard?: boolean | null;
+          job_title?: string | null;
+          nickname?: string | null;
+          profile_image_url?: string | null;
+          second_link?: string | null;
+          second_link_type?: string | null;
+          tech_stacks?: string[] | null;
+          user_id?: string;
+        };
+        Update: {
+          answer1?: string | null;
+          answer2?: string | null;
+          answer3?: string | null;
+          background_image_url?: string | null;
+          blog?: string | null;
+          created_at?: string | null;
+          description?: string | null;
+          email?: string | null;
+          experience?: string | null;
+          first_link?: string | null;
+          first_link_type?: string | null;
+          hubCard?: boolean | null;
+          job_title?: string | null;
+          nickname?: string | null;
+          profile_image_url?: string | null;
+          second_link?: string | null;
+          second_link_type?: string | null;
+          tech_stacks?: string[] | null;
+          user_id?: string;
+        };
+        Relationships: [];
+      };
     };
-    Views: Record<never, never>;
-    Functions: Record<never, never>;
+    Views: {
+      [_ in never]: never;
+    };
+    Functions: {
+      [_ in never]: never;
+    };
     Enums: {
-      app_permission: "channels.delete" | "messages.delete";
-      app_role: "admin" | "moderator";
-      user_status: "ONLINE" | "OFFLINE";
+      app_permission: 'channels.delete' | 'messages.delete';
+      app_role: 'admin' | 'moderator';
+      user_status: 'ONLINE' | 'OFFLINE';
     };
-    CompositeTypes: Record<never, never>;
+    CompositeTypes: {
+      [_ in never]: never;
+    };
   };
-};
+}
 
-type PublicSchema = Database[Extract<keyof Database, "public">];
+type PublicSchema = Database[Extract<keyof Database, 'public'>];
 
 export type Tables<
-  PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] & PublicSchema["Views"]) | { schema: keyof Database },
+  PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] & PublicSchema['Views']) | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-        Database[PublicTableNameOrOptions["schema"]]["Views"])
+    ? keyof (Database[PublicTableNameOrOptions['schema']]['Tables'] &
+        Database[PublicTableNameOrOptions['schema']]['Views'])
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? (Database[PublicTableNameOrOptions["schema"]]["Tables"] &
-      Database[PublicTableNameOrOptions["schema"]]["Views"])[TableName] extends {
+  ? (Database[PublicTableNameOrOptions['schema']]['Tables'] &
+      Database[PublicTableNameOrOptions['schema']]['Views'])[TableName] extends {
       Row: infer R;
     }
     ? R
     : never
-  : PublicTableNameOrOptions extends keyof (PublicSchema["Tables"] & PublicSchema["Views"])
-  ? (PublicSchema["Tables"] & PublicSchema["Views"])[PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof (PublicSchema['Tables'] & PublicSchema['Views'])
+  ? (PublicSchema['Tables'] & PublicSchema['Views'])[PublicTableNameOrOptions] extends {
       Row: infer R;
     }
     ? R
@@ -362,18 +400,18 @@ export type Tables<
   : never;
 
 export type TablesInsert<
-  PublicTableNameOrOptions extends keyof PublicSchema["Tables"] | { schema: keyof Database },
+  PublicTableNameOrOptions extends keyof PublicSchema['Tables'] | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Insert: infer I;
     }
     ? I
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
+  ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
       Insert: infer I;
     }
     ? I
@@ -381,18 +419,18 @@ export type TablesInsert<
   : never;
 
 export type TablesUpdate<
-  PublicTableNameOrOptions extends keyof PublicSchema["Tables"] | { schema: keyof Database },
+  PublicTableNameOrOptions extends keyof PublicSchema['Tables'] | { schema: keyof Database },
   TableName extends PublicTableNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicTableNameOrOptions["schema"]]["Tables"]
+    ? keyof Database[PublicTableNameOrOptions['schema']]['Tables']
     : never = never,
 > = PublicTableNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicTableNameOrOptions["schema"]]["Tables"][TableName] extends {
+  ? Database[PublicTableNameOrOptions['schema']]['Tables'][TableName] extends {
       Update: infer U;
     }
     ? U
     : never
-  : PublicTableNameOrOptions extends keyof PublicSchema["Tables"]
-  ? PublicSchema["Tables"][PublicTableNameOrOptions] extends {
+  : PublicTableNameOrOptions extends keyof PublicSchema['Tables']
+  ? PublicSchema['Tables'][PublicTableNameOrOptions] extends {
       Update: infer U;
     }
     ? U
@@ -400,12 +438,25 @@ export type TablesUpdate<
   : never;
 
 export type Enums<
-  PublicEnumNameOrOptions extends keyof PublicSchema["Enums"] | { schema: keyof Database },
+  PublicEnumNameOrOptions extends keyof PublicSchema['Enums'] | { schema: keyof Database },
   EnumName extends PublicEnumNameOrOptions extends { schema: keyof Database }
-    ? keyof Database[PublicEnumNameOrOptions["schema"]]["Enums"]
+    ? keyof Database[PublicEnumNameOrOptions['schema']]['Enums']
     : never = never,
 > = PublicEnumNameOrOptions extends { schema: keyof Database }
-  ? Database[PublicEnumNameOrOptions["schema"]]["Enums"][EnumName]
-  : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
-  ? PublicSchema["Enums"][PublicEnumNameOrOptions]
+  ? Database[PublicEnumNameOrOptions['schema']]['Enums'][EnumName]
+  : PublicEnumNameOrOptions extends keyof PublicSchema['Enums']
+  ? PublicSchema['Enums'][PublicEnumNameOrOptions]
+  : never;
+
+export type CompositeTypes<
+  PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes'] | { schema: keyof Database },
+  CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
+    schema: keyof Database;
+  }
+    ? keyof Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes']
+    : never = never,
+> = PublicCompositeTypeNameOrOptions extends { schema: keyof Database }
+  ? Database[PublicCompositeTypeNameOrOptions['schema']]['CompositeTypes'][CompositeTypeName]
+  : PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes']
+  ? PublicSchema['CompositeTypes'][PublicCompositeTypeNameOrOptions]
   : never;

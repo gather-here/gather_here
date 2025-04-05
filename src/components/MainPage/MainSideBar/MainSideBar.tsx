@@ -1,12 +1,11 @@
-"use client";
+'use client';
 
-import Calender from "@/components/MainPage/MainSideBar/Calender/Calender";
-import Chat from "@/components/MainPage/MainSideBar/Chat/Chat";
-import { useEffect, useState } from "react";
-import Image from "next/image";
-import ChatModal from "./Chat/ChatModal";
-import PRCard from "./PrCard/PrCard";
-import Footer from "./Footer/Footer";
+import Chat from '@/components/MainPage/MainSideBar/Chat/Chat';
+import { useEffect, useState } from 'react';
+import Image from 'next/image';
+import ChatModal from './Chat/ChatModal';
+import PRCard from './PrCard/PrCard';
+import Footer from './Footer/Footer';
 
 const MainSideBar = () => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -36,18 +35,18 @@ const MainSideBar = () => {
       }, 200);
     };
 
-    window.addEventListener("scroll", handleScroll);
+    window.addEventListener('scroll', handleScroll);
 
     return () => {
       if (timer) {
         clearTimeout(timer);
       }
-      window.removeEventListener("scroll", handleScroll);
+      window.removeEventListener('scroll', handleScroll);
     };
   }, []);
 
   const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   return (
@@ -55,7 +54,7 @@ const MainSideBar = () => {
       <div className="col-span-1 m:hidden">
         <div className="sticky top-4">
           <PRCard />
-          <Calender />
+          {/* <Calender /> */}
           <Footer />
         </div>
       </div>

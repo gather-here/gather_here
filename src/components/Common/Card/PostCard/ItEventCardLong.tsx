@@ -1,27 +1,28 @@
-"use client";
-import LikeButton from "@/components/EventsDetail/ITLikeButton";
-import { useAuth } from "@/provider/user/UserAuthProvider";
-import { Tables } from "@/types/supabase";
-import dayjs from "dayjs";
-import { NextPage } from "next";
-import Image from "next/image";
-import Link from "next/link";
-import { useEffect, useState } from "react";
-import "dayjs/locale/ko"; // 한국어 로케일 임포트
+'use client';
+
+import { Tables } from '@/types/supabase';
+import dayjs from 'dayjs';
+import { NextPage } from 'next';
+import Image from 'next/image';
+import Link from 'next/link';
+import { useEffect, useState } from 'react';
+import 'dayjs/locale/ko'; // 한국어 로케일 임포트
+import { useUserData } from '@/provider/user/UserDataProvider';
+import ITLikeButton from '@/components/EventsDetail/ITLikeButton';
 
 interface EventsCardProps {
-  post: Tables<"IT_Events">;
+  post: Tables<'IT_Events'>;
 }
 
 const ItEventCardLong: NextPage<EventsCardProps> = ({ post }) => {
-  const { user: currentUser } = useAuth();
+  const { userData } = useUserData();
   const [isMounted, setIsMounted] = useState<boolean>(false);
   const deadlineDate = new Date(post.date_done);
   deadlineDate.setHours(0, 0, 0, 0);
   const currentDate = new Date();
   currentDate.setHours(0, 0, 0, 0);
   const daysLeft = Math.ceil((deadlineDate.getTime() - Date.now()) / (1000 * 60 * 60 * 24));
-  const displayDaysLeft = daysLeft === 0 ? "D-day" : `D-${daysLeft.toFixed(0)}`;
+  const displayDaysLeft = daysLeft === 0 ? 'D-day' : `D-${daysLeft.toFixed(0)}`;
 
   useEffect(() => {
     setIsMounted(true);
@@ -31,7 +32,7 @@ const ItEventCardLong: NextPage<EventsCardProps> = ({ post }) => {
     };
   }, []);
 
-  dayjs.locale("ko");
+  dayjs.locale('ko');
 
   return (
     <article className="w-auto p-5 bg-fillStrong rounded-2xl m-2 mb-4">
@@ -42,10 +43,10 @@ const ItEventCardLong: NextPage<EventsCardProps> = ({ post }) => {
             <span className="label-secondary rounded-full text-baseS px-3 py-1.5 mr-1">{displayDaysLeft}</span>
           </li>
           <li className="text-baseS text-labelNormal ml-2">
-            <time dateTime="YYYY-MM-DD">{dayjs(post.date_start).format("YYYY.MM.DD (ddd)")}</time>
+            <time dateTime="YYYY-MM-DD">{dayjs(post.date_start).format('YYYY.MM.DD (ddd)')}</time>
           </li>
           <li className="absolute right-0">
-            <LikeButton eventId={post.event_id} currentUser={currentUser} />
+            <ITLikeButton eventId={post.event_id} currentUser={userData} />
           </li>
         </ul>
       ) : null}

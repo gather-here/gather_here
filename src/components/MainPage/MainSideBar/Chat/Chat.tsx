@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
-import Image from "next/image";
-import dayjs from "dayjs";
-import LoginForm from "@/components/Login/LoginForm";
-import useChat from "@/hooks/useChat";
-import { secureImageUrl } from "@/utils/imageUtils";
-
+import Image from 'next/image';
+import dayjs from 'dayjs';
+import LoginForm from '@/components/Login/LoginForm';
+import useChat from '@/hooks/useChat';
+import { secureImageUrl } from '@/utils/imageUtils';
 
 const Chat = () => {
   const {
@@ -47,7 +46,7 @@ const Chat = () => {
                 <div id="mine" className="self-stretch px-3 flex-col justify-center items-end flex">
                   <div className="flex-col justify-center items-end gap-1 flex">
                     <div className="flex items-end">
-                      <button className="mr-2 pointer" onClick={() => handleDelete(message.message_id)}>
+                      <button className="mr-2 pointer" onClick={() => void handleDelete(message.message_id)}>
                         삭제
                       </button>
                       <div className="max-w-[190px] p-3 bg-primary rounded-tl-[20px] rounded-tr rounded-bl-[20px] rounded-br-[20px] justify-center items-center gap-2.5 inline-flex">
@@ -57,7 +56,7 @@ const Chat = () => {
                       </div>
                     </div>
                     <div className="mt-1 self-stretch text-right text-[#919191] text-xs font-normal font-pretendard leading-none">
-                      {dayjs(message.sent_at).format("YY.MM.DD HH:mm")}
+                      {dayjs(message.sent_at).format('YY.MM.DD HH:mm')}
                     </div>
                   </div>
                 </div>
@@ -65,14 +64,14 @@ const Chat = () => {
                 <div className="self-stretch justify-start items-start gap-2 inline-flex">
                   <div className="w-8 h-8 bg-[#3b3d3f] rounded-[9px] justify-center items-center flex">
                     <div className="justify-center items-center flex">
-                      <div className="relative" style={{ width: "32px", height: "32px" }}>
+                      <div className="relative" style={{ width: '32px', height: '32px' }}>
                         <Image
                           className="rounded-xl"
-                          src={secureImageUrl(message.Users?.profile_image_url) ?? "/assets/header/user.svg"}
+                          src={secureImageUrl(message.Users?.profile_image_url) ?? '/assets/header/user.svg'}
                           alt="Profile image"
                           fill
                           sizes="(max-width: 32px) 100vw, 32px"
-                          style={{ objectFit: "cover" }}
+                          style={{ objectFit: 'cover' }}
                         />
                       </div>
                     </div>
@@ -87,7 +86,7 @@ const Chat = () => {
                       </div>
                     </div>
                     <div className="mt-1 self-stretch text-labelAssistive text-xs font-normal font-pretendard leading-none">
-                      {dayjs(message.sent_at).format("YY.MM.DD HH:mm")}
+                      {dayjs(message.sent_at).format('YY.MM.DD HH:mm')}
                     </div>
                   </div>
                 </div>
@@ -95,7 +94,7 @@ const Chat = () => {
             </div>
           ))}
         </div>
-        <form action="" className="w-full" onSubmit={(evt) => handleSubmit(evt)} ref={formRef}>
+        <form action="" className="w-full" onSubmit={(evt) => void handleSubmit(evt)} ref={formRef}>
           {user ? (
             <div
               id="input"
@@ -107,12 +106,12 @@ const Chat = () => {
                   onChange={(evt) => setInputValue(evt.target.value)}
                   onKeyDown={(evt) => handleEnterKeyDown(evt)}
                   placeholder="메시지를 입력해보세요"
-                  className="w-full h-12 self-stretch bg-fillNeutral border-0 rounded-lg justify-start items-start inline-flex border self-stretch text-fontWhite overflow-auto scrollbar-hide resize-none mr-4 p-3 focus:outline-none"
+                  className="w-full h-12 bg-fillNeutral rounded-lg justify-start items-start inline-flex border self-stretch text-fontWhite overflow-auto scrollbar-hide resize-none mr-4 p-3 focus:outline-none"
                 />
                 <button
                   type="submit"
                   className={`w-5 h-5 m-3 text-fontWhite ${
-                    inputValue.trim() ? "cursor-pointer" : "hover:cursor-default"
+                    inputValue.trim() ? 'cursor-pointer' : 'hover:cursor-default'
                   }`}
                 >
                   <Image src="/Chat/send.svg" alt="Send Button" width={30} height={30} />

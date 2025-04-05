@@ -19,9 +19,10 @@ export function createServerSupabaseClient(): SupabaseClient<Database> {
       getAll: () => cookieStore.getAll(),
       setAll: (cookiesToSet) => {
         try {
+          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
           cookiesToSet.forEach(({ name, value, options }) => cookieStore.set(name, value, options));
         } catch (err) {
-          console.error("쿠키 설정 중 오류 발생:", err);
+          console.error('쿠키 설정 중 오류 발생:', err);
         }
       },
     },

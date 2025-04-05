@@ -1,28 +1,27 @@
-import { Tables } from "../supabase";
+import { Tables } from '../supabase';
 
 // 게시글 정보 타입
 export interface Post {
-  post_id: string;
-  user_id: string;
-  created_at: string;
   category: string;
+  content: string;
+  created_at: string;
+  deadline: string;
   duration: number;
   location: string | null;
-  total_members: number;
-  personal_link?: string | null;
-  target_position: string[]; 
+  personal_link: string | null;
+  place: string;
+  post_id: string;
   recruitments: number;
-  tech_stack: string | string[]; 
-  deadline: string;
-  title: string;
-  content: string;
-  place?: string | null;
+  target_position: string[];
+  tech_stack: string[];
+  title: string | null;
+  total_members: number;
+  user_id: string;
 }
 
 // 유저 정보 타입 (Posts에 연결된 작성자)
 export interface User {
-  email: string;
-  nickname: string;
+  nickname: string | null;
   profile_image_url: string | null;
 }
 
@@ -50,6 +49,5 @@ export interface FetchEventsPostsOptions {
   order?: { column: string; ascending: boolean };
 }
 
-
 // IT 행사 테이블 타입 (Supabase 테이블 자동 타입 추론 기반)
-export type ITEvent = Tables<"IT_Events">;
+export type ITEvent = Tables<'IT_Events'>;

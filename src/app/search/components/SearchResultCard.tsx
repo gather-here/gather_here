@@ -1,7 +1,7 @@
-import { Tables } from "@/types/supabase";
-import dayjs from "dayjs";
+import { Tables } from '@/types/supabase';
+import dayjs from 'dayjs';
 
-const SearchResultCard = ({ post }: { post: Tables<"Posts"> }) => {
+const SearchResultCard = ({ post }: { post: Tables<'Posts'> }) => {
   return (
     <div className="w-[335px] h-64 p-5 bg-[#141415] rounded-[20px] flex-col justify-center items-center gap-3 inline-flex">
       <div className="self-stretch justify-between items-center inline-flex">
@@ -9,7 +9,7 @@ const SearchResultCard = ({ post }: { post: Tables<"Posts"> }) => {
           <div className="px-2 py-1 bg-[#3b3d3f] rounded-full flex-col justify-center items-center inline-flex">
             <div className="justify-center items-center gap-1 inline-flex">
               <div className="text-[#c3e88d] text-xs font-semibold font-['Pretendard'] leading-none">
-                D-N{dayjs(post.deadline).format("YY.MM.DD (ddd)")}
+                D-N{dayjs(post.deadline).format('YY.MM.DD (ddd)')}
               </div>
             </div>
           </div>
@@ -31,7 +31,7 @@ const SearchResultCard = ({ post }: { post: Tables<"Posts"> }) => {
         <div className="h-6 p-1.5 bg-[#3b3d3f] rounded-md justify-center items-center gap-1.5 flex" />
         <div className="text-[#919191] text-sm font-normal font-['Pretendard'] leading-[21px]">User</div>
       </div>
-      <div className="self-stretch p-3 bg-[#212121] rounded-[10px] shadow-[0px_0px_1px_0px_rgba(0,0,0,0.08)] shadow-[0px_1px_4px_0px_rgba(0,0,0,0.08)] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] justify-between items-center inline-flex">
+      <div className="self-stretch p-3 bg-[#212121] rounded-[10px] shadow-[0px_2px_8px_0px_rgba(0,0,0,0.12)] justify-between items-center inline-flex">
         <div className="grow shrink basis-0 h-[25px] justify-start items-center gap-4 flex">
           <div className="grow shrink basis-0 h-[25px] justify-between items-center flex">
             <div className="justify-start items-center gap-2 flex">
