@@ -24,7 +24,10 @@ const HubProfile: React.FC = () => {
   const [answer2, setAnswer2] = useState("");
   const [answer3, setAnswer3] = useState("");
   const [techStacks, setTechStacks] = useState<string[]>([]);
-  const [toastState, setToastState] = useState({ state: "", message: "" });
+  const [toast, setToast] = useState<{
+    state: "success" | "error" | "warn" | "info" | "custom" | "";
+    message: string;
+  }>({ state: "", message: "" });
 
   useEffect(() => {
     const fetchUserProfile = async () => {
@@ -61,7 +64,7 @@ const HubProfile: React.FC = () => {
 
   const handleSave = async () => {
     if (!blog) {
-      setToastState({ state: "error", message: "포트폴리오 링크를 작성해주세요!" });
+      setToast({ state: "error", message: "포트폴리오 링크를 작성해주세요!" });
       return;
     }
 
@@ -85,9 +88,9 @@ const HubProfile: React.FC = () => {
       .eq("user_id", user.id);
 
     if (error) {
-      setToastState({ state: "error", message: `저장에 실패했습니다: ${error.message}` });
+      setToast({ state: "error", message: `저장에 실패했습니다: ${error.message}` });
     } else {
-      setToastState({ state: "success", message: "저장되었습니다." });
+      setToast({ state: "success", message: "저장되었습니다." });
       if (user?.id) {
         void fetchUserData(user.id);
       }
@@ -131,13 +134,13 @@ const HubProfile: React.FC = () => {
           </button>
         </div>
       </div>
-      {toastState.state && (
-        <Toast
-          state={toastState.state}
-          message={toastState.message}
-          onClear={() => setToastState({ state: "", message: "" })}
-        />
-      )}
+      {toast.state && (
+            <Toast
+              state={toast.state}
+              message={toast.message}
+              onClear={() => setToast({ state: "", message: "" })}
+            />
+          )}
     </section>
   );
 };
