@@ -39,7 +39,7 @@ const extractFormData = (form: HTMLFormElement) => {
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [nickname, setNickname] = useState(initialData.nickname);
     const { userData } = useUserData(); 
-    const nicknameAvailable = useCheckNickname(nickname);  // 닉네임 유효성 검사 훅
+    const { result: nicknameAvailable, isEmpty } = useCheckNickname(nickname);
 
     // 취소 버튼 클릭 시 처리 함수
     const handleCancelClick = (e: React.FormEvent<HTMLFormElement>) => {
@@ -116,7 +116,12 @@ const extractFormData = (form: HTMLFormElement) => {
                     defaultValue={initialData.nickname}
                     onChange={(e) => setNickname(e.target.value)}
                     placeholder="닉네임을 입력해주세요."
-                    className="w-full shared-input-gray-2 border border-fillLight"
+                    className={`
+                      w-full shared-input-gray-2 border
+                      ${isEmpty || nicknameAvailable?.valid === false
+                        ? "border-statusDestructive"
+                        : "border-fillLight"}
+                    `}
                   />
                   <p
                     className={`text-baseXs mt-1 ${

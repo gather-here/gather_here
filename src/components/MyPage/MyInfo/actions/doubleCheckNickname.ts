@@ -44,6 +44,22 @@ export async function doubleCheckNickname(nickname: string) {
     };
   }
 
+  // 숫자로만 구성된 닉네임 제한
+  if (/^\d+$/.test(trimmed)) {
+    return {
+      valid: false,
+      message: "닉네임은 숫자만으로 구성할 수 없습니다.",
+    };
+  }
+
+  // 숫자로 시작하는 닉네임 제한
+  if (/^\d/.test(trimmed)) {
+    return {
+      valid: false,
+      message: "닉네임은 한글 또는 영문으로 시작해야 합니다.",
+    };
+  }
+
   // 중복 확인
   const { data: existing, error } = await supabase
     .from("Users")

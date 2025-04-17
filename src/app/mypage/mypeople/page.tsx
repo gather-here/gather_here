@@ -131,7 +131,7 @@ const MyPeoplePage: React.FC = () => {
           ))}
         </div>
       ) : (
-        <p>준비중입니다! 조금만 기다려주세요!</p>
+        <p className="mt-8 text-center text-labelNeutral col-span-full">아직 좋아요한 멤버가 없어요! 다른 유저의 PR을 보고 좋아요를 눌러보세요.🧐 </p>
       )}
     </div>
   );
