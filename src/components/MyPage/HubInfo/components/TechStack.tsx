@@ -2,6 +2,11 @@
 
 import Image from "next/image";
 
+interface TechStackProps {
+  selectedStacks: string[]; // 현재 선택된 기술 스택 ID 목록
+  setSelectedStacks: (value: string[]) => void; // useReducer와 호환
+}
+
 // 기술 스택 데이터
 const techStacks = [
   { id: "aws", name: "AWS", image: "/Stacks/AWS.svg" },
@@ -38,15 +43,15 @@ const techStacks = [
 ];
 
 // TechStack 컴포넌트
-const TechStack: React.FC<{
-  selectedStacks: string[];
-  setSelectedStacks: React.Dispatch<React.SetStateAction<string[]>>;
-}> = ({ selectedStacks, setSelectedStacks }) => {
+const TechStack: React.FC<TechStackProps> = ({ selectedStacks, setSelectedStacks }) => {
+  // 기술 스택 선택/해제 핸들러
   const handleSelectStack = (stackId: string) => {
     if (selectedStacks.includes(stackId)) {
-      setSelectedStacks((prev) => prev.filter((id) => id !== stackId));
+      // 이미 선택된 경우 제거
+      setSelectedStacks(selectedStacks.filter((id) => id !== stackId));
     } else if (selectedStacks.length < 10) {
-      setSelectedStacks((prev) => [...prev, stackId]);
+      // 최대 10개까지 선택 허용
+      setSelectedStacks([...selectedStacks, stackId]);
     } else {
       alert("최대 10개의 기술 스택만 선택할 수 있습니다.");
     }
@@ -55,25 +60,31 @@ const TechStack: React.FC<{
   return (
     <div className="ml-5 mb-5">
       <h1 className="text-subtitle font-baseBold text-labelNeutral mb-5">기술 스택 선택</h1>
+
+      {/* 스택 선택 UI */}
       <div className="flex flex-wrap gap-4">
         {techStacks.map((stack) => (
           <button
             key={stack.id}
             onClick={() => handleSelectStack(stack.id)}
             className={`tech-stack-button flex items-center justify-center px-4 py-2 rounded-xl cursor-pointer gap-2
-        ${
-          selectedStacks.includes(stack.id)
-            ? "border-primary border-2 bg-fillLight text-primary"
-            : "bg-fillLight text-labelNormal"
-        }`}
+              ${selectedStacks.includes(stack.id)
+                ? "border-primary border-2 bg-fillLight text-primary"
+                : "bg-fillLight text-labelNormal"}`}
           >
-            <Image src={stack.image} alt={stack.name} width={20} height={20} style={{ objectFit: "contain" }} />
+            <Image
+              src={stack.image}
+              alt={stack.name}
+              width={20}
+              height={20}
+              style={{ objectFit: "contain" }}
+            />
             <span className="tech-stack-text">{stack.name}</span>
           </button>
         ))}
       </div>
 
-      {/* Styled JSX 미디어 쿼리 적용 */}
+      {/* 텍스트 숨김 처리 */}
       <style jsx>{`
         .tech-stack-button {
           white-space: nowrap;
@@ -83,7 +94,7 @@ const TechStack: React.FC<{
 
         @media (max-width: 734px) {
           .tech-stack-text {
-            display: none; /* 작은 화면에서는 텍스트 숨기기 */
+            display: none;
           }
         }
       `}</style>
