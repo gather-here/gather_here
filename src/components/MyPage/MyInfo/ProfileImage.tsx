@@ -5,6 +5,7 @@ import { useUserData } from "@/provider/user/UserDataProvider";
 import { updateProfileImage } from "./actions/updateProfileImage";
 import { supabase } from "@/utils/supabase/client";
 import Image from "next/image";
+import React, { useState, useMemo, useCallback } from "react";
 
 interface ProfileImageProps {
   onImageChange?: (url: string) => void;
@@ -12,9 +13,10 @@ interface ProfileImageProps {
 }
 
 const defaultImage = "/assets/header/user.svg";
-const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL;
+const imageBaseUrl = process.env.NEXT_PUBLIC_IMAGE_BASE_URL!;
+const stripQuery = (url: string | null) => url?.split("?")[0] ?? ""; // 쿼리 스트링 제거 유틸 함수 (불필요한 버전 정보 제거 목적)
 
-// 아이콘 목록 (직군별)
+// 직군별 아이콘 목록
 const iconOptions = [
   "프론트엔드", "백엔드", "IOS", "안드로이드", "데브옵스",
   "디자인", "PM", "기획", "마케팅",
@@ -25,44 +27,48 @@ const iconOptions = [
 
 const ProfileImage: React.FC<ProfileImageProps> = ({ onImageChange, onToast }) => {
   const { userData, setUserData } = useUserData();
+  const [imageVersion, setImageVersion] = useState(0); // 이미지 버전 상태
 
-  // 현재 유저의 프로필 이미지
-  const currentImage = userData?.profile_image_url ?? defaultImage;
+  // 프로필 이미지 URL 메모이제이션
+  const currentImage = useMemo(() => {
+    const rawUrl = userData?.profile_image_url ?? defaultImage;
+    return `${stripQuery(rawUrl)}?v=${imageVersion}`;
+  }, [userData?.profile_image_url, imageVersion]);
 
-  // Supabase Storage에 이미지 업로드 → public URL 반환
-  const uploadToSupabase = async (file: File | Blob) => {
-    const ext = file instanceof File ? file.name.split(".").pop() : "png";
-    const timestamp = Date.now();
-    const filename = `profile_${timestamp}.${ext}`;
-    const path = `profileImages/${filename}`;
-
-    const { error: uploadError } = await supabase.storage
-      .from("images")
-      .upload(path, file, { upsert: true });
-
-    if (uploadError) throw new Error(uploadError.message);
-
-    const { data } = supabase.storage.from("images").getPublicUrl(path);
-    return data?.publicUrl ? `${data.publicUrl}?t=${timestamp}` : null;
-  };
-
-  // 파일 업로드 처리 + 상태 반영
-  const handleImageUpload = async (file: File | Blob) => {
+  // 이미지 업로드 처리 로직 (스토리지 업로드 후 DB 업데이트 및 상태 반영)
+  const handleImageUpload = useCallback(async (file: File | Blob) => {
     try {
-      const publicUrl = await uploadToSupabase(file);
+      const ext = file instanceof File ? file.name.split(".").pop() : "png";
+      const timestamp = Date.now();
+      const filename = `profile_${timestamp}.${ext}`;
+      const path = `profileImages/${filename}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from("images")
+        .upload(path, file, { upsert: true });
+
+      if (uploadError) throw new Error(uploadError.message);
+
+      const { data } = supabase.storage.from("images").getPublicUrl(path);
+      const publicUrl = data?.publicUrl;
+
       if (!publicUrl) throw new Error("이미지 URL 생성 실패");
 
-      await updateProfileImage(publicUrl); // DB 업데이트
+      await updateProfileImage(publicUrl); // DB에는 쿼리 없는 순수 URL 저장
+
+      // 상태 업데이트: 전역 상태와 캐시용 버전 번호 증가
       setUserData((prev) => (prev ? { ...prev, profile_image_url: publicUrl } : prev));
+      setImageVersion((prev) => prev + 1); // 4번: 새 버전 갱신
       onImageChange?.(publicUrl);
+
       onToast("success", "프로필 이미지가 변경되었습니다.");
     } catch (e) {
       console.error(e);
       onToast("error", "이미지 업로드에 실패했습니다.");
     }
-  };
+  }, [setUserData, onImageChange, onToast]);
 
-  // 아이콘 클릭 시 → 이미지 fetch 후 업로드 처리
+  // 아이콘 클릭 시 해당 URL의 이미지를 fetch해서 업로드 처리
   const handleUploadFromUrl = async (url: string) => {
     try {
       const blob = await (await fetch(`${url}?t=${Date.now()}`)).blob();
@@ -103,7 +109,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ onImageChange, onToast }) =
                     style={{ objectFit: "cover" }}
                     className="rounded-full m:rounded-[9px]"
                   />
-                  {/* 호버 시 아이콘 */}
+                  {/* hover 시 아이콘 오버레이 */}
                   <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-50 opacity-0 group-hover:opacity-100 transition-opacity z-10">
                     <Image
                       alt="호버시 플러스 버튼 아이콘"
@@ -114,7 +120,7 @@ const ProfileImage: React.FC<ProfileImageProps> = ({ onImageChange, onToast }) =
                   </div>
                 </div>
               </button>
-              {/* 아이콘 라벨 툴팁 */}
+              {/* 툴팁 표시 */}
               <div
                 className={`absolute z-20 whitespace-nowrap py-1 px-2 min-h-6 ${
                   index < 4 ? "bottom-full mb-2" : "top-full mt-2"

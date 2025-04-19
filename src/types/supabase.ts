@@ -359,20 +359,14 @@ export interface Database {
         Relationships: [];
       };
     };
-    Views: {
-      [_ in never]: never;
-    };
-    Functions: {
-      [_ in never]: never;
-    };
+    Views: Record<never, never>;
+    Functions: Record<never, never>;
     Enums: {
       app_permission: 'channels.delete' | 'messages.delete';
       app_role: 'admin' | 'moderator';
       user_status: 'ONLINE' | 'OFFLINE';
     };
-    CompositeTypes: {
-      [_ in never]: never;
-    };
+    CompositeTypes: Record<never, never>;
   };
 }
 
@@ -449,6 +443,7 @@ export type Enums<
   : never;
 
 export type CompositeTypes<
+  // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
   PublicCompositeTypeNameOrOptions extends keyof PublicSchema['CompositeTypes'] | { schema: keyof Database },
   CompositeTypeName extends PublicCompositeTypeNameOrOptions extends {
     schema: keyof Database;
