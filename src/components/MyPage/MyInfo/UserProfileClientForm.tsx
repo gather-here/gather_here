@@ -70,7 +70,10 @@ const extractFormData = (form: HTMLFormElement) => {
           experience,
           profileImageUrl: userData?.profile_image_url ?? "",
         })
-        .then(() => setIsSaveModalOpen(true))
+        .then(() => {
+          setToast({ state: "success", message: "프로필이 저장되었습니다." });
+          setIsSaveModalOpen(true);
+        })
         .catch((err) => {
           const message = err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
           setToast({ state: "error", message });
