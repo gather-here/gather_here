@@ -1,20 +1,10 @@
-import { createServerSupabaseClient } from "@/utils/supabase/server";
+import { getCurrentUserWithData } from "@/lib/server/user";
 import UserProfileClientForm from "./UserProfileClientForm";
 
 export default async function UserProfileForm() {
-  const supabase = createServerSupabaseClient();
+  const { user, userData } = await getCurrentUserWithData();
 
-  // 인증된 유저 정보 가져오기
-  const { data: { user } } = await supabase.auth.getUser();
-
-  // 유저 상세 정보 가져오기
-  const { data: userData, error } = await supabase
-    .from("Users")
-    .select("*")
-    .eq("user_id", user!.id)
-    .single();
-
-  if (error || !userData) {
+  if (!user || !userData) {
     return <div>사용자 정보를 불러올 수 없습니다.</div>;
   }
 

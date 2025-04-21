@@ -32,9 +32,9 @@ const extractFormData = (form: HTMLFormElement) => {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [toast, setToast] = useState<{
-      state: "success" | "error" | "warn" | "info" | "custom" | "";
+      state: "success" | "error" | "warn" | "info" | "custom";
       message: string;
-    }>({ state: "", message: "" });
+    } | null>(null);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [nickname, setNickname] = useState(initialData.nickname);
@@ -205,11 +205,11 @@ const extractFormData = (form: HTMLFormElement) => {
             </fieldset>
           </form>
     
-          {toast.state && (
+          {toast && (
             <Toast
               state={toast.state}
               message={toast.message}
-              onClear={() => setToast({ state: "", message: "" })}
+              onClear={() => setToast(null)}
             />
           )}
 
