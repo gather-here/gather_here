@@ -14,7 +14,10 @@ interface LikeButtonProps {
 
 const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, onRemoveBookmark }) => {
   const [liked, setLiked] = useState(false);
-  const [toastState, setToastState] = useState({ state: '', message: '' });
+   const [toast, setToast] = useState<{
+      state: "success" | "error" | "warn" | "info" | "custom";
+      message: string;
+    } | null>(null);
 
   useEffect(() => {
     const checkLikeStatus = async () => {
@@ -28,7 +31,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, 
         if (likeError) {
           if (status !== 406) {
             console.error('Error checking like status:', likeError.message);
-            setToastState({ state: 'error', message: '좋아요 상태를 확인하는 중 오류가 발생했습니다.' });
+            setToast({ state: 'error', message: '좋아요 상태를 확인하는 중 오류가 발생했습니다.' });
           }
         } else if (likeData && likeData.length > 0) {
           setLiked(true);
@@ -41,7 +44,7 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, 
 
   const handleLike = async () => {
     if (!currentUser) {
-      setToastState({ state: 'error', message: '로그인이 필요합니다!' });
+      setToast({ state: 'error', message: '로그인이 필요합니다!' });
       return;
     }
 
@@ -52,11 +55,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, 
         category,
       });
       if (error) {
-        setToastState({ state: 'error', message: '좋아요 등록 중 오류가 발생했습니다.' });
+        setToast({ state: 'error', message: '좋아요 등록 중 오류가 발생했습니다.' });
         console.error('Error liking post:', error.message);
       } else {
         setLiked(true);
-        setToastState({ state: 'success', message: '게시글을 좋아요 했습니다!' });
+        setToast({ state: 'success', message: '게시글을 좋아요 했습니다!' });
       }
     } else {
       const { error } = await supabase
@@ -65,11 +68,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, 
         .eq('user_id', currentUser.user_id)
         .eq('post_id', postId);
       if (error) {
-        setToastState({ state: 'error', message: '좋아요 취소 중 오류가 발생했습니다.' });
+        setToast({ state: 'error', message: '좋아요 취소 중 오류가 발생했습니다.' });
         console.error('Error unliking post:', error.message);
       } else {
         setLiked(false);
-        setToastState({ state: 'success', message: '게시글 좋아요를 취소했습니다.' });
+        setToast({ state: 'success', message: '게시글 좋아요를 취소했습니다.' });
 
         if (onRemoveBookmark) {
           onRemoveBookmark(postId);
@@ -88,11 +91,11 @@ const LikeButton: React.FC<LikeButtonProps> = ({ postId, currentUser, category, 
           />
         </svg>
       </button>
-      {toastState.state && (
+      {toast && (
         <Toast
-          state={toastState.state}
-          message={toastState.message}
-          onClear={() => setToastState({ state: '', message: '' })}
+          state={toast.state}
+          message={toast.message}
+          onClear={() => setToast(null)}
         />
       )}
     </>

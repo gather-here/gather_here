@@ -46,7 +46,7 @@ const MemberCard: React.FC<MemberCardProps> = ({
   // 좋아요 버튼 클릭 시 실행되는 함수
   const handleToggleLike = () => {
     if (!currentUserId) {
-      console.warn("좋아요 실패: 로그인된 사용자가 없습니다.");
+      alert("로그인이 필요합니다.");
       return;
     }
     

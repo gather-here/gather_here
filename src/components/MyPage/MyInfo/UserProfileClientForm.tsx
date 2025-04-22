@@ -32,14 +32,14 @@ const extractFormData = (form: HTMLFormElement) => {
     const router = useRouter();
     const [isPending, startTransition] = useTransition();
     const [toast, setToast] = useState<{
-      state: "success" | "error" | "warn" | "info" | "custom" | "";
+      state: "success" | "error" | "warn" | "info" | "custom";
       message: string;
-    }>({ state: "", message: "" });
+    } | null>(null);
     const [isCancelModalOpen, setIsCancelModalOpen] = useState(false);
     const [isSaveModalOpen, setIsSaveModalOpen] = useState(false);
     const [nickname, setNickname] = useState(initialData.nickname);
     const { userData } = useUserData(); 
-    const nicknameAvailable = useCheckNickname(nickname);  // 닉네임 유효성 검사 훅
+    const { result: nicknameAvailable, isEmpty } = useCheckNickname(nickname);
 
     // 취소 버튼 클릭 시 처리 함수
     const handleCancelClick = (e: React.FormEvent<HTMLFormElement>) => {
@@ -70,7 +70,10 @@ const extractFormData = (form: HTMLFormElement) => {
           experience,
           profileImageUrl: userData?.profile_image_url ?? "",
         })
-        .then(() => setIsSaveModalOpen(true))
+        .then(() => {
+          setToast({ state: "success", message: "프로필이 저장되었습니다." });
+          setIsSaveModalOpen(true);
+        })
         .catch((err) => {
           const message = err instanceof Error ? err.message : "알 수 없는 오류가 발생했습니다.";
           setToast({ state: "error", message });
@@ -116,7 +119,12 @@ const extractFormData = (form: HTMLFormElement) => {
                     defaultValue={initialData.nickname}
                     onChange={(e) => setNickname(e.target.value)}
                     placeholder="닉네임을 입력해주세요."
-                    className="w-full shared-input-gray-2 border border-fillLight"
+                    className={`
+                      w-full shared-input-gray-2 border
+                      ${isEmpty || nicknameAvailable?.valid === false
+                        ? "border-statusDestructive"
+                        : "border-fillLight"}
+                    `}
                   />
                   <p
                     className={`text-baseXs mt-1 ${
@@ -205,11 +213,11 @@ const extractFormData = (form: HTMLFormElement) => {
             </fieldset>
           </form>
     
-          {toast.state && (
+          {toast && (
             <Toast
               state={toast.state}
               message={toast.message}
-              onClear={() => setToast({ state: "", message: "" })}
+              onClear={() => setToast(null)}
             />
           )}
 

@@ -3,19 +3,22 @@ import Toast from "@/components/Common/Toast/Toast";
 
 const ShareButton: React.FC = () => {
   const [isClicked, setIsClicked] = useState(false);
-  const [toastState, setToastState] = useState({ state: "", message: "" });
+  const [toast, setToast] = useState<{
+        state: "success" | "error" | "warn" | "info" | "custom";
+        message: string;
+      } | null>(null);
 
   const handleShare = () => {
     const url = window.location.href;
     navigator.clipboard
       .writeText(url)
       .then(() => {
-        setToastState({ state: "success", message: "URL 복사 완료하였습니다!" });
+        setToast({ state: "success", message: "URL 복사 완료하였습니다!" });
         setIsClicked(true);
         setTimeout(() => setIsClicked(false), 1000);
       })
       .catch(() => {
-        setToastState({ state: "error", message: "URL 복사에 실패했습니다." });
+        setToast({ state: "error", message: "URL 복사에 실패했습니다." });
       });
   };
 
@@ -37,11 +40,11 @@ const ShareButton: React.FC = () => {
           />
         </svg>
       </button>
-      {toastState.state && (
+      {toast && (
         <Toast
-          state={toastState.state}
-          message={toastState.message}
-          onClear={() => setToastState({ state: "", message: "" })}
+          state={toast.state}
+          message={toast.message}
+          onClear={() => setToast(null)}
         />
       )}
     </>

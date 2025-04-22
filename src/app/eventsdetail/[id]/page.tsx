@@ -5,7 +5,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { supabase } from '@/utils/supabase/client';
 import Image from 'next/image';
 import LikeButton from '@/components/EventsDetail/ITLikeButton';
-import ShareButton from '@/components/MainDetail/ShareButton';
+import ShareButton from '@/components/MainDetail/components/common/ShareButton';
 import Link from 'next/link';
 import { useUserData } from '@/provider/user/UserDataProvider';
 import { ITEvent } from '@/types/posts/Post.type';

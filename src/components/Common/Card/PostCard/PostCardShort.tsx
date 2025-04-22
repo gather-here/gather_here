@@ -5,7 +5,7 @@ import { PostWithUser } from '@/types/posts/Post.type';
 import Image from 'next/image';
 import Link from 'next/link';
 import DOMPurify from 'dompurify';
-import LikeButton from '@/components/MainDetail/LikeButton';
+import LikeButton from '@/components/MainDetail/components/common/LikeButton';
 import dayjs from 'dayjs';
 import { secureImageUrl } from '@/utils/imageUtils';
 import { useUserData } from '@/provider/user/UserDataProvider';

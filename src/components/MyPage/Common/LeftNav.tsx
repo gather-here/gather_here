@@ -50,12 +50,12 @@ const LeftNav: React.FC = () => {
   }, [user, fetchUserData]); 
 
   return (
-    <aside className="sticky top-0 p-6 s:p-0 w-[250px] max-h-[360px] flex flex-col items-start gap-3 rounded-[20px] bg-fillStrong text-fontWhite shadow-sm s:hidden">
+    <aside className="sticky top-0 p-6 s:p-0 w-[250px] max-h-[540px] flex flex-col items-start gap-3 rounded-[20px] bg-fillStrong text-fontWhite shadow-sm s:hidden">
       {loading ? (
         <LeftNavLoader />
       ) : userData ? (
-        <div className="flex items-center gap-3 mb-1 pb-5 w-full border-b-[1px] border-labelAssistive">
-          <div className="w-12 h-12 rounded-[12px] bg-fillLight flex justify-center items-center relative">
+        <div className="flex flex-col items-center gap-3 mb-1 pb-5 w-full border-b-[1px] border-labelAssistive">
+          <div className="w-48 h-48 rounded-[12px] bg-fillLight flex justify-center items-center relative">
             <Image
               src={secureImageUrl(userData?.profile_image_url || defaultImage)}
               alt="프로필 이미지"
@@ -66,10 +66,12 @@ const LeftNav: React.FC = () => {
               priority
             />
           </div>
-          <ol>
-            <li className="font-baseBold text-labelStrong">{userData.nickname}</li>
-            <li className={`text-sm ${jobTitleClass} relative`}>
-              <span className="pr-2">{userData.job_title}</span>
+          <ol className="flex text-xs leading-tight text-center text-labelStrong">
+            <li className="font-baseBold">{userData.nickname}</li>          
+            <li className="px-2 text-labelAssistive">|</li>         
+            <li className={`${jobTitleClass}`}>
+              <span className="pr-1">{userData.job_title}</span>
+              <span className="text-labelAssistive px-1">|</span>
               <span>{userData.experience}</span>
             </li>
           </ol>

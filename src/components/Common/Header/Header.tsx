@@ -8,12 +8,15 @@ import { useUserData } from '@/provider/user/UserDataProvider';
 import { supabase } from '@/utils/supabase/client';
 import SearchBar from '@/components/Search/SearchBar';
 import { SearchModalRef } from '@/types/refs/SearchModal';
+import { useRouter } from 'next/navigation';
 
 const Header: React.FC = () => {
   const { user, resetAuthUser } = useAuth();
   const { userData } = useUserData();
   const [isMypageModalOpen, setIsMypageModalOpen] = useState(false);
   const modalRef = useRef<SearchModalRef>(null);
+  const router = useRouter();
+
 
   // 로그아웃 함수
   const signOut = async () => {
@@ -29,6 +32,7 @@ const Header: React.FC = () => {
       }
     } finally {
       void resetAuthUser(); // 사용자 상태 초기화
+      router.push('/');
     }
   };
 

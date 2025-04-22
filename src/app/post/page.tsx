@@ -5,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import Image from 'next/image';
 import { supabase } from '@/utils/supabase/client';
 import useDraft from '@/hooks/useDraft';
-import FormInput from '@/components/MainDetail/FormInput';
-import FormDropdown from '@/components/MainDetail/FormDropdown';
-import FormMultiSelect from '@/components/MainDetail/FormMultiSelect';
+import FormInput from '@/components/MainDetail/components/form/FormInput';
+import FormDropdown from '@/components/MainDetail/components/form/FormDropdown';
+import FormMultiSelect from '@/components/MainDetail/components/form/FormMultiSelect';
 import ReactQuillEditor from '@/components/MainDetail/ReactQuillEditor';
 import 'react-quill/dist/quill.snow.css';
 import CommonModal from '@/components/Common/Modal/CommonModal';
@@ -25,7 +25,10 @@ const PostPage = () => {
   const [userId, setUserId] = useState<string | null>(null);
   const [showLoginModal, setShowLoginModal] = useState<boolean>(false);
   const [showExitModal, setShowExitModal] = useState<boolean>(false);
-  const [toastState, setToastState] = useState({ state: '', message: '' });
+  const [toast, setToast] = useState<{
+    state: "success" | "error" | "warn" | "info" | "custom";
+    message: string;
+  } | null>(null);
   const router = useRouter();
 
   useEffect(() => {
@@ -34,7 +37,7 @@ const PostPage = () => {
       if (data?.user) {
         setUserId(data.user.id);
       } else if (error) {
-        setToastState({ state: 'error', message: '로그인이 필요합니다!' });
+        setToast({ state: 'error', message: '로그인이 필요합니다!' });
       }
     };
     void getUser();
@@ -50,10 +53,10 @@ const PostPage = () => {
 
     const validationError = validateDraft(draft);
     if (validationError) {
-      if (toastState.message !== validationError) {
-        setToastState({ state: 'error', message: validationError });
+      if (toast?.message !== validationError) {
+        setToast({ state: 'error', message: validationError });
         setTimeout(() => {
-          setToastState({ state: '', message: '' });
+          setToast(null);
         }, 2000);
       }
       return;
@@ -89,10 +92,10 @@ const PostPage = () => {
 
   const handleSaveDraft = () => {
     saveDraft();
-    if (toastState.state !== 'success') {
-      setToastState({ state: 'success', message: '임시 저장이 완료되었습니다!' });
+    if (toast?.state !== 'success') {
+      setToast({ state: 'success', message: '임시 저장이 완료되었습니다!' });
       setTimeout(() => {
-        setToastState({ state: '', message: '' });
+        setToast(null);
       }, 2000);
     }
   };
@@ -390,13 +393,13 @@ const PostPage = () => {
           </div>
         </div>
       </form>
-      {toastState.state && (
-        <Toast
-          state={toastState.state}
-          message={toastState.message}
-          onClear={() => setToastState({ state: '', message: '' })}
-        />
-      )}
+      {toast && (
+            <Toast
+              state={toast.state}
+              message={toast.message}
+              onClear={() => setToast(null)}
+            />
+          )}
     </>
   );
 };

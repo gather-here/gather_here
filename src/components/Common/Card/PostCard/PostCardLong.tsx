@@ -5,7 +5,7 @@ import Image from 'next/image';
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import dayjs from 'dayjs';
-import LikeButton from '@/components/MainDetail/LikeButton';
+import LikeButton from '@/components/MainDetail/components/common/LikeButton';
 import { secureImageUrl } from '@/utils/imageUtils';
 import DOMPurify from 'dompurify';
 import { useUserData } from '@/provider/user/UserDataProvider';

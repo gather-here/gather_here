@@ -1,20 +1,27 @@
 import { createServerSupabaseClient } from "@/utils/supabase/server";
 import UserProfileClientForm from "./UserProfileClientForm";
 
-export default async function UserProfileForm() {
+const UserProfileForm = async () => {
   const supabase = createServerSupabaseClient();
 
-  // 인증된 유저 정보 가져오기
-  const { data: { user } } = await supabase.auth.getUser();
+  // 유저 세션 가져오기
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    return <div>사용자 정보를 불러올 수 없습니다.</div>;
+  }
 
   // 유저 상세 정보 가져오기
   const { data: userData, error } = await supabase
     .from("Users")
     .select("*")
-    .eq("user_id", user!.id)
-    .single();
+    .eq("user_id", user.id)
+    .maybeSingle();
 
   if (error || !userData) {
+    console.error("유저 데이터 불러오기 실패:", error);
     return <div>사용자 정보를 불러올 수 없습니다.</div>;
   }
 
@@ -29,4 +36,6 @@ export default async function UserProfileForm() {
       }}
     />
   );
-}
+};
+
+export default UserProfileForm;
